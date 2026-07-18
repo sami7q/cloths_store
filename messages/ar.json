@@ -44,7 +44,42 @@
     "greeting": "مرحبًا",
     "role": "الدور",
     "email": "البريد الإلكتروني",
-    "overviewNote": "إدارة الطلبات والعناوين والملف الشخصي تصل في المرحلة الخامسة."
+    "overviewNote": "إدارة الطلبات والعناوين والملف الشخصي تصل في المرحلة الخامسة.",
+    "overview": "نظرة عامة",
+    "orders": "الطلبات",
+    "addresses": "العناوين",
+    "profile": "الملف الشخصي",
+    "recentOrders": "أحدث الطلبات",
+    "noOrders": "لا توجد طلبات بعد.",
+    "viewAll": "عرض الكل",
+    "order": "الطلب",
+    "date": "التاريخ",
+    "status": "الحالة",
+    "total": "الإجمالي",
+    "items": "منتجات",
+    "defaultAddress": "العنوان الافتراضي",
+    "noAddress": "لا يوجد عنوان محفوظ.",
+    "addAddress": "إضافة عنوان",
+    "editAddress": "تعديل",
+    "deleteAddress": "حذف",
+    "setDefault": "تعيين كافتراضي",
+    "default": "افتراضي",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "label": "الاسم المختصر",
+    "statusTimeline": "مسار الحالة",
+    "paymentLabel": "الدفع",
+    "shippingTo": "الشحن إلى",
+    "updateProfile": "تحديث الملف",
+    "profileSaved": "تم تحديث الملف.",
+    "changePassword": "تغيير كلمة المرور",
+    "currentPassword": "كلمة المرور الحالية",
+    "newPassword": "كلمة المرور الجديدة",
+    "passwordChanged": "تم تغيير كلمة المرور.",
+    "wrongPassword": "كلمة المرور الحالية غير صحيحة.",
+    "noPassword": "هذا الحساب يستخدم تسجيل جوجل.",
+    "wishlistTitle": "المفضلة",
+    "wishlistEmpty": "قائمة المفضلة فارغة."
   },
   "admin": {
     "title": "لوحة التحكم",
@@ -203,5 +238,26 @@
     "codFee": "رسوم الاستلام",
     "total": "الإجمالي",
     "footer": "وصلتك هذه الرسالة لأنك أتممت طلبًا لدينا."
+  },
+  "reviews": {
+    "writeReview": "اكتب تقييمًا",
+    "rating": "التقييم",
+    "reviewTitle": "العنوان (اختياري)",
+    "reviewBody": "تقييمك",
+    "submit": "إرسال التقييم",
+    "loginToReview": "سجّل الدخول لكتابة تقييم",
+    "pendingNote": "شكرًا! تقييمك بانتظار المراجعة.",
+    "alreadyReviewed": "قيّمت هذا المنتج من قبل.",
+    "reviewError": "تعذّر إرسال التقييم."
+  },
+  "search": {
+    "suggestions": "اقتراحات",
+    "seeAll": "عرض كل النتائج",
+    "noSuggestions": "لا نتائج"
+  },
+  "notFound": {
+    "title": "الصفحة غير موجودة",
+    "body": "الصفحة التي تبحث عنها غير موجودة.",
+    "backHome": "العودة للمتجر"
   }
 }

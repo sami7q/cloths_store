@@ -10,6 +10,7 @@ import {
 import { PromoMarquee } from "@/components/store/promo-marquee";
 import { StoreHeader } from "@/components/store/store-header";
 import { NavClient } from "@/components/store/nav-client";
+import { SearchBox } from "@/components/store/search-box";
 import { DarkFooter } from "@/components/store/dark-footer";
 import { SideOfferTab } from "@/components/store/side-offer-tab";
 import { ScrollTopButton } from "@/components/store/scroll-top-button";
@@ -52,10 +53,6 @@ export default async function StorefrontLayout({ children }: { children: React.R
   const socialLinks = (settings?.socialLinks ?? {}) as Record<string, string>;
   const seo = (settings?.seoDefaults ?? {}) as { description?: string };
 
-  const wishlistCount = session?.user
-    ? await db.wishlistItem.count({ where: { userId: session.user.id } })
-    : 0;
-
   const pages = await db.page.findMany({
     where: { isActive: true },
     select: { slug: true, title: true },
@@ -74,12 +71,23 @@ export default async function StorefrontLayout({ children }: { children: React.R
         logo={<StoreLogo name={name} logoUrl={settings?.logoUrl ?? null} />}
         searchPlaceholder={t.common.searchPlaceholder}
         searchLabel={t.common.search}
+        searchSlot={
+          <SearchBox
+            labels={{
+              placeholder: t.common.searchPlaceholder,
+              searchLabel: t.common.search,
+              seeAll: t.search.seeAll,
+              noSuggestions: t.search.noSuggestions,
+            }}
+          />
+        }
         hotline={settings?.hotline ?? undefined}
         accountLabel={t.common.account}
         accountHref="/account"
       />
       <NavClient
         currency={currency}
+        isAuthenticated={Boolean(session?.user)}
         links={[
           { label: t.store.home, href: "/", active: true },
           ...categories.map((c) => ({ label: c.name, href: `/category/${c.slug}` })),
@@ -88,7 +96,6 @@ export default async function StorefrontLayout({ children }: { children: React.R
           { label: t.store.aboutUs, href: "/pages/about-us" },
           { label: t.store.contact, href: "/pages/about-us" },
         ]}
-        wishlistCount={wishlistCount}
         wishlistHref="/wishlist"
         wishlistLabel={t.common.wishlist}
         cartLabel={t.common.cart}

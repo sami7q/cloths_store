@@ -38,7 +38,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
       ) : (
         <div className="grid grid-cols-4 gap-5 max-lg:grid-cols-2 max-md:grid-cols-1">
           {result.products.map((p) => (
-            <ShopProductCard key={p.id} {...buildProductCardProps(p, currency, promo)} quickAddItem={buildQuickAddItem(p)} />
+            <ShopProductCard key={p.id} productId={p.id} {...buildProductCardProps(p, currency, promo)} quickAddItem={buildQuickAddItem(p)} />
           ))}
         </div>
       )}

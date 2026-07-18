@@ -31,6 +31,9 @@ export type ProductCardProps = {
   addToCartLabel?: string;
   wishlistLabel?: string;
   onAddToCart?: () => void;
+  /** Controlled wishlist state; falls back to local state when absent. */
+  wished?: boolean;
+  onToggleWishlist?: () => void;
 };
 
 export function ProductCard({
@@ -51,12 +54,15 @@ export function ProductCard({
   addToCartLabel,
   wishlistLabel = "Add to wishlist",
   onAddToCart,
+  wished: wishedProp,
+  onToggleWishlist,
 }: ProductCardProps) {
   const [swatchIndex, setSwatchIndex] = useState(0);
   const [selectedSizes, setSelectedSizes] = useState<ReadonlySet<string>>(
     new Set(),
   );
-  const [wished, setWished] = useState(false);
+  const [wishedLocal, setWished] = useState(false);
+  const wished = wishedProp ?? wishedLocal;
 
   const toggleSize = (size: string) => {
     setSelectedSizes((prev) => {
@@ -87,7 +93,7 @@ export function ProductCard({
           type="button"
           aria-label={wishlistLabel}
           aria-pressed={wished}
-          onClick={() => setWished((w) => !w)}
+          onClick={() => (onToggleWishlist ? onToggleWishlist() : setWished((w) => !w))}
           className={cn(
             "absolute end-3.5 top-3.5 z-[2] transition-colors",
             wished ? "text-deal-red" : "text-ink hover:text-deal-red",

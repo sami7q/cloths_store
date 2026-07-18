@@ -13,6 +13,8 @@ import { SplitHeading } from "@/components/store/split-heading";
 import { ShopProductCard } from "@/components/store/shop-product-card";
 import { buildProductCardProps, buildQuickAddItem } from "@/components/store/product-card-mapper";
 import { PdpInteractive } from "./pdp-interactive";
+import { ReviewForm } from "./review-form";
+import { auth } from "@/lib/auth";
 
 export async function generateMetadata({
   params,
@@ -35,10 +37,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = await getProductBySlug(slug);
   if (!product || product.status !== "ACTIVE") notFound();
 
-  const [settings, promo, related] = await Promise.all([
+  const [settings, promo, related, session] = await Promise.all([
     getStoreSettings(),
     getPromoFacts(),
     getRelatedProducts(product.categoryId, product.id),
+    auth(),
   ]);
   const currency = settings?.currency ?? "EGP";
   const t = messages.pdp;
@@ -55,8 +58,39 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     { title: t.shippingReturns, body: null },
   ];
 
+  const inStock = product.variants.some((v) => v.stock > 0);
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: product.name,
+      description: product.seoDescription ?? product.description,
+      sku: product.sku,
+      image: product.images.map((i) => i.url),
+      offers: {
+        "@type": "Offer",
+        price: toNumber(product.basePrice),
+        priceCurrency: currency,
+        availability: inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      },
+      ...(avgRating != null
+        ? { aggregateRating: { "@type": "AggregateRating", ratingValue: avgRating, reviewCount: ratings.length } }
+        : {}),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: messages.store.home, item: "/" },
+        { "@type": "ListItem", position: 2, name: product.category.name, item: `/category/${product.category.slug}` },
+        { "@type": "ListItem", position: 3, name: product.name },
+      ],
+    },
+  ];
+
   return (
     <div className="container-store pb-4 pt-8">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {/* Breadcrumb */}
       <nav className="mb-6 text-sm font-semibold text-gray-6">
         <Link href="/" className="hover:text-navy">
@@ -185,6 +219,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </span>
           ) : null}
         </h2>
+        <ReviewForm
+          productId={product.id}
+          isAuthenticated={Boolean(session?.user)}
+          labels={messages.reviews}
+        />
         {product.reviews.length === 0 ? (
           <p className="mt-4 text-gray-6">{t.reviewsEmpty}</p>
         ) : (
@@ -212,7 +251,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <SplitHeading left={t.relatedProducts.split(" ")[0]} right={t.relatedProducts.split(" ").slice(1).join(" ")} />
           <div className="grid grid-cols-4 gap-5 max-lg:grid-cols-2 max-md:grid-cols-1">
             {related.map((p) => (
-              <ShopProductCard key={p.id} {...buildProductCardProps(p, currency, promo)} quickAddItem={buildQuickAddItem(p)} />
+              <ShopProductCard key={p.id} productId={p.id} {...buildProductCardProps(p, currency, promo)} quickAddItem={buildQuickAddItem(p)} />
             ))}
           </div>
         </section>

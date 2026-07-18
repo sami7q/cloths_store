@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
+import { verifiedUserId } from "@/lib/auth-guards";
 import { computeQuote, type CouponInput, type QuoteLine } from "@/lib/promotions";
 import { toNumber } from "@/lib/format";
 import type { PaymentMethod, PromoType } from "@/lib/enums";
@@ -256,14 +257,8 @@ export async function placeOrder(raw: unknown): Promise<PlaceOrderResult> {
     return { ok: false, error: "card_unavailable" };
   }
 
-  const session = await auth();
-  // A JWT session can outlive its user row (e.g. DB re-seed, deleted account)
-  // — verify it still exists, else place the order as guest.
-  let userId: string | null = session?.user?.id ?? null;
-  if (userId) {
-    const exists = await db.user.findUnique({ where: { id: userId }, select: { id: true } });
-    if (!exists) userId = null;
-  }
+  // Stale-JWT safe: verified against the DB (see lib/auth-guards).
+  const userId = await verifiedUserId();
   const quote = await quoteCart({
     items: input.items,
     couponCode: input.couponCode,

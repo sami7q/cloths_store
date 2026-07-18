@@ -44,7 +44,42 @@
     "greeting": "Hello",
     "role": "Role",
     "email": "Email",
-    "overviewNote": "Orders, addresses and profile management arrive in Phase 5."
+    "overviewNote": "Orders, addresses and profile management arrive in Phase 5.",
+    "overview": "Overview",
+    "orders": "Orders",
+    "addresses": "Addresses",
+    "profile": "Profile",
+    "recentOrders": "Recent orders",
+    "noOrders": "No orders yet.",
+    "viewAll": "View all",
+    "order": "Order",
+    "date": "Date",
+    "status": "Status",
+    "total": "Total",
+    "items": "items",
+    "defaultAddress": "Default address",
+    "noAddress": "No address saved yet.",
+    "addAddress": "Add address",
+    "editAddress": "Edit",
+    "deleteAddress": "Delete",
+    "setDefault": "Set as default",
+    "default": "Default",
+    "save": "Save",
+    "cancel": "Cancel",
+    "label": "Label",
+    "statusTimeline": "Status timeline",
+    "paymentLabel": "Payment",
+    "shippingTo": "Shipping to",
+    "updateProfile": "Update profile",
+    "profileSaved": "Profile updated.",
+    "changePassword": "Change password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "passwordChanged": "Password changed.",
+    "wrongPassword": "Current password is incorrect.",
+    "noPassword": "This account uses Google sign-in.",
+    "wishlistTitle": "Wishlist",
+    "wishlistEmpty": "Your wishlist is empty."
   },
   "admin": {
     "title": "Admin",
@@ -203,5 +238,26 @@
     "codFee": "COD fee",
     "total": "Total",
     "footer": "You received this email because you placed an order."
+  },
+  "reviews": {
+    "writeReview": "Write a review",
+    "rating": "Rating",
+    "reviewTitle": "Title (optional)",
+    "reviewBody": "Your review",
+    "submit": "Submit review",
+    "loginToReview": "Sign in to write a review",
+    "pendingNote": "Thanks! Your review is awaiting moderation.",
+    "alreadyReviewed": "You already reviewed this product.",
+    "reviewError": "Could not submit review."
+  },
+  "search": {
+    "suggestions": "Suggestions",
+    "seeAll": "See all results",
+    "noSuggestions": "No matches"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The page you are looking for does not exist.",
+    "backHome": "Back to store"
   }
 }

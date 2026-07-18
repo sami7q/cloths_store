@@ -1,7 +1,21 @@
 import { redirect } from "next/navigation";
 import { auth } from "./auth";
+import { db } from "./db";
 import { can, isAdminAreaRole, type AccessLevel, type AdminModule } from "./permissions";
 import type { Session } from "next-auth";
+
+/**
+ * Session user id, verified against the DB — a JWT can outlive its user row
+ * (re-seeds, deleted accounts). Every server action that WRITES rows keyed by
+ * userId must use this instead of session.user.id.
+ */
+export async function verifiedUserId(): Promise<string | null> {
+  const session = await auth();
+  const id = session?.user?.id;
+  if (!id) return null;
+  const exists = await db.user.findUnique({ where: { id }, select: { id: true } });
+  return exists ? id : null;
+}
 
 /**
  * Server-side guards — every admin page and server action re-verifies here,

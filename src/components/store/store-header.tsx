@@ -11,6 +11,8 @@ export type StoreHeaderProps = {
   /** GET target for the search form, e.g. "/search" (query lands in ?q=). */
   searchAction?: string;
   searchDefaultValue?: string;
+  /** Replaces the built-in search form (e.g. live-suggestions search box). */
+  searchSlot?: ReactNode;
   /** Hotline number — from StoreSettings; hidden when absent. */
   hotline?: string;
   accountLabel: string;
@@ -25,6 +27,7 @@ export function StoreHeader({
   searchLabel,
   searchAction = "/search",
   searchDefaultValue,
+  searchSlot,
   hotline,
   accountLabel,
   accountHref = "#",
@@ -35,6 +38,11 @@ export function StoreHeader({
         <a href={homeHref} aria-label={homeLabel} className="shrink-0">
           {logo}
         </a>
+        {searchSlot ? (
+          <div className="relative min-w-0 flex-1 basis-64 max-md:order-3 max-md:basis-full">
+            {searchSlot}
+          </div>
+        ) : (
         <form
           action={searchAction}
           role="search"
@@ -55,6 +63,7 @@ export function StoreHeader({
             <SearchIcon className="size-[18px]" />
           </button>
         </form>
+        )}
         <div className="flex shrink-0 items-center gap-[22px]">
           {hotline ? (
             <a

@@ -1,50 +1,77 @@
-import { requireUser } from "@/lib/auth-guards";
-import { isAdminAreaRole } from "@/lib/permissions";
-import { messages } from "@/lib/i18n";
-import { Badge } from "@/components/ui/badge";
-import { SignOutButton } from "@/components/store/signout-button";
 import Link from "next/link";
+import { requireUser } from "@/lib/auth-guards";
+import { db } from "@/lib/db";
+import { messages } from "@/lib/i18n";
+import { formatPrice } from "@/lib/format";
+import { getStoreSettings } from "@/server/storefront";
+import { Badge } from "@/components/ui/badge";
 
 export const metadata = { title: messages.account.title };
 
-// Placeholder — the full account area (orders, addresses, profile) is Phase 5.
-export default async function AccountPage() {
+export default async function AccountOverviewPage() {
   const session = await requireUser();
   const t = messages.account;
+  const [settings, ordersCount, wishlistCount, defaultAddress, recent] = await Promise.all([
+    getStoreSettings(),
+    db.order.count({ where: { userId: session.user.id } }),
+    db.wishlistItem.count({ where: { userId: session.user.id } }),
+    db.address.findFirst({ where: { userId: session.user.id, isDefault: true } }),
+    db.order.findMany({
+      where: { userId: session.user.id },
+      orderBy: { createdAt: "desc" },
+      take: 3,
+      include: { _count: { select: { items: true } } },
+    }),
+  ]);
+  const currency = settings?.currency ?? "EGP";
 
   return (
-    <div className="container-store py-16">
-      <div className="mx-auto max-w-[560px] rounded-3xl border border-line bg-white p-8">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="font-heading text-3xl font-bold uppercase tracking-[1px]">{t.title}</h1>
-            <p className="mt-2 text-gray-6">
-              {t.greeting}, <span className="font-bold text-ink">{session.user.name}</span>
-            </p>
-          </div>
-          <SignOutButton label={messages.auth.signOut} />
+    <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-3 gap-4 max-md:grid-cols-1">
+        <div className="rounded-[10px] border border-line bg-white p-5">
+          <p className="text-sm text-gray-6">{t.orders}</p>
+          <p className="mt-1 text-3xl font-extrabold">{ordersCount}</p>
         </div>
-        <dl className="mt-6 flex flex-col gap-3 border-t border-line pt-6 text-sm">
-          <div className="flex justify-between">
-            <dt className="text-gray-6">{t.email}</dt>
-            <dd className="font-semibold">{session.user.email}</dd>
-          </div>
-          <div className="flex items-center justify-between">
-            <dt className="text-gray-6">{t.role}</dt>
-            <dd>
-              <Badge tone="navy">{session.user.role}</Badge>
-            </dd>
-          </div>
-        </dl>
-        <p className="mt-6 text-sm text-gray-6">{t.overviewNote}</p>
-        {isAdminAreaRole(session.user.role) ? (
-          <p className="mt-4">
-            <Link href="/admin" className="font-bold text-navy hover:underline">
-              → {messages.admin.title}
-            </Link>
+        <div className="rounded-[10px] border border-line bg-white p-5">
+          <p className="text-sm text-gray-6">{t.wishlistTitle}</p>
+          <p className="mt-1 text-3xl font-extrabold">{wishlistCount}</p>
+        </div>
+        <div className="rounded-[10px] border border-line bg-white p-5">
+          <p className="text-sm text-gray-6">{t.defaultAddress}</p>
+          <p className="mt-1 text-sm font-semibold leading-relaxed">
+            {defaultAddress ? `${defaultAddress.city}, ${defaultAddress.street}` : t.noAddress}
           </p>
-        ) : null}
+        </div>
       </div>
+
+      <section className="rounded-[10px] border border-line bg-white p-5">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="font-heading text-lg font-bold uppercase tracking-[1px]">{t.recentOrders}</h2>
+          <Link href="/account/orders" className="text-sm font-bold text-navy hover:underline">
+            {t.viewAll} →
+          </Link>
+        </div>
+        {recent.length === 0 ? (
+          <p className="text-gray-6">{t.noOrders}</p>
+        ) : (
+          <ul className="flex flex-col divide-y divide-line">
+            {recent.map((o) => (
+              <li key={o.id} className="flex items-center justify-between gap-3 py-3">
+                <Link href={`/account/orders/${o.orderNumber}`} className="font-extrabold text-navy hover:underline">
+                  {o.orderNumber}
+                </Link>
+                <span className="text-sm text-gray-6">
+                  {o.createdAt.toLocaleDateString("en-GB")} · {o._count.items} {t.items}
+                </span>
+                <Badge tone={o.status === "DELIVERED" ? "save" : o.status === "CANCELLED" ? "deal" : "navy"}>
+                  {o.status}
+                </Badge>
+                <span className="font-bold">{formatPrice(o.grandTotal, currency)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }

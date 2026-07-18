@@ -176,6 +176,34 @@ platform generic and admin-configurable.
   fallback. Vitest pinned to v3 + vite 6 (vitest 4's rolldown native binding
   fails to install on this machine).
 
+## Phase 5 — Account & extras
+
+- **`verifiedUserId()` centralizes the stale-JWT guard** (lib/auth-guards):
+  every server action writing rows keyed by userId (orders, wishlist,
+  reviews, addresses, profile) resolves the session id against the DB first.
+  Replaces the Phase-4 inline check after the same FK failure surfaced in
+  wishlist sync.
+- **Wishlist state lives in a client store for everyone** (localStorage);
+  logged-in users mirror to the DB via fire-and-forget actions. The
+  guest-merge (§5) happens in NavClient on the first authenticated mount:
+  local ids are pushed via `syncWishlist` and the store adopts the merged
+  authoritative list.
+- **`/wishlist` is client-rendered from serializable card payloads**
+  (`getWishlistCards`) because guest ids only exist in the browser; the same
+  action also performs the merge for logged-in users.
+- **Header search suggestions** debounce 250 ms, min 2 chars, top-5 by
+  name/material; the presentational StoreHeader gained a `searchSlot` prop so
+  the client SearchBox replaces the plain GET form.
+- **Reviews submit as PENDING** (one per user per product, enforced in the
+  action — no DB unique constraint in §4) and raise an admin notification;
+  they appear on the PDP only after Phase-6 moderation approves them.
+- **Order detail is owner-only** (`order.userId === session.user.id`) — staff
+  views arrive with the Phase 6 orders module.
+- **SEO**: dynamic `sitemap.ts` (static + categories + products + pages from
+  the DB, base URL from AUTH_URL), `robots.ts` disallowing
+  admin/account/api/checkout/cart/dev, JSON-LD Product + BreadcrumbList on
+  the PDP, themed 404 page.
+
 ## ⚠ Pending tasks — before the final deployment phase
 
 - **Switch the datasource back to PostgreSQL:** set

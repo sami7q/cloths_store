@@ -249,6 +249,7 @@ export default async function CategoryPage({
               {result.products.map((p) => (
                 <ShopProductCard
                   key={p.id}
+                  productId={p.id}
                   {...buildProductCardProps(p, currency, promo)}
                   quickAddItem={buildQuickAddItem(p)}
                 />
