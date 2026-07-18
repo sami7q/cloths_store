@@ -8,6 +8,9 @@ export type StoreHeaderProps = {
   homeLabel?: string;
   searchPlaceholder: string;
   searchLabel: string;
+  /** GET target for the search form, e.g. "/search" (query lands in ?q=). */
+  searchAction?: string;
+  searchDefaultValue?: string;
   /** Hotline number — from StoreSettings; hidden when absent. */
   hotline?: string;
   accountLabel: string;
@@ -20,6 +23,8 @@ export function StoreHeader({
   homeLabel = "Home",
   searchPlaceholder,
   searchLabel,
+  searchAction = "/search",
+  searchDefaultValue,
   hotline,
   accountLabel,
   accountHref = "#",
@@ -30,20 +35,26 @@ export function StoreHeader({
         <a href={homeHref} aria-label={homeLabel} className="shrink-0">
           {logo}
         </a>
-        <div className="relative min-w-0 flex-1 basis-64 max-md:order-3 max-md:basis-full">
+        <form
+          action={searchAction}
+          role="search"
+          className="relative min-w-0 flex-1 basis-64 max-md:order-3 max-md:basis-full"
+        >
           <input
             type="search"
+            name="q"
+            defaultValue={searchDefaultValue}
             placeholder={searchPlaceholder}
             className="h-14 w-full rounded-[32px] border border-line bg-white pe-16 ps-[26px] text-base text-ink outline-none transition-colors placeholder:text-gray-4 focus:border-navy"
           />
           <button
-            type="button"
+            type="submit"
             aria-label={searchLabel}
             className="absolute end-1.5 top-1.5 flex size-11 items-center justify-center rounded-full bg-navy text-white"
           >
             <SearchIcon className="size-[18px]" />
           </button>
-        </div>
+        </form>
         <div className="flex shrink-0 items-center gap-[22px]">
           {hotline ? (
             <a

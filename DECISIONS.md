@@ -108,6 +108,35 @@ platform generic and admin-configurable.
   view/edit badges — they exist so RBAC is verifiable now; Phase 6 replaces
   them module by module.
 
+## Phase 3 — Storefront core
+
+- **Main nav is derived from active top-level categories** (+ static Home /
+  About / Contact links). There is no Menu model in §4; the §6.10 Navigation
+  menu editor will add dedicated storage in Phase 6 — until then categories
+  are the single source of truth.
+- **`Banner.config.style` holds a CSS background** (gradient) used when no
+  `imageUrl` is set; a merchant-uploaded image always wins. Seeded decorative
+  banners ship gradients so the sample store looks like the reference without
+  fake photos.
+- **Homepage carousels read fixed collection slugs** (`new-arrivals`,
+  `popular-for-her`, `popular-for-him`, `for-kids`, `best-sellers`) — the
+  content of each is fully admin-managed; sections with no products
+  auto-hide. Making the slug list itself configurable can ride along with the
+  Phase 6 content module.
+- **Product-card promo note reads PromoRule configs directly**
+  (CARD_EXTRA_PERCENT / FREE_SHIPPING_OVER) as display facts; the full
+  cart-evaluation promo engine is Phase 4.
+- **Footer about-text comes from `StoreSettings.seoDefaults.description`** —
+  no dedicated field in §4; revisit if admin needs a separate blurb.
+- **`/pages/[slug]` and a minimal `/search` shipped early** (spec places them
+  in Phase 5) so footer/header links resolve during visual verification;
+  search gains live suggestions in Phase 5.
+- **PLP filters are URL-state, server-rendered** (toggle links + GET form for
+  price) — no client JS beyond the shared cards; filters compose and reset
+  pagination on change.
+- **PDP metadata uses `seoTitle` as an absolute title** because seeded/admin
+  seoTitle may already include the store name (avoids "X | Store | Store").
+
 ## ⚠ Pending tasks — before the final deployment phase
 
 - **Switch the datasource back to PostgreSQL:** set

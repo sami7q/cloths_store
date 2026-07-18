@@ -359,32 +359,44 @@ async function main() {
       { placement: "MARQUEE", title: "Extra 15% off when you pay by card", titleAr: "خصم إضافي ١٥٪ عند الدفع بالبطاقة", sortOrder: 1 },
       { placement: "MARQUEE", title: "2nd item -15% · 3rd item -30%", titleAr: "القطعة الثانية -١٥٪ · الثالثة -٣٠٪", sortOrder: 2 },
       { placement: "MARQUEE", title: "New arrivals every week", titleAr: "وصولات جديدة كل أسبوع", sortOrder: 3 },
-      // hero
+      // hero — no imageUrl in seed: config.style gradient renders until the
+      // merchant uploads a real image from admin (imageUrl then wins).
       {
         placement: "HERO",
         title: "Comfort With Personality",
         titleAr: "شبشب زنوبا",
         subtitle: "Lightweight comfort with playful charms to match your vibe.",
         subtitleAr: "راحة خفيفة بلمسات مرحة تناسب أسلوبك.",
-        imageUrl: BANNER_IMG,
         linkUrl: "/category/flip-flops",
-        config: { badge: "New Arrivals", badgeAr: "وصل حديثًا" },
+        config: {
+          badge: "New Arrivals",
+          badgeAr: "وصل حديثًا",
+          style: "radial-gradient(120% 120% at 20% 15%, #7FA24B 0%, #4F7A2B 45%, #2F5217 100%)",
+        },
         sortOrder: 0,
       },
       // lifestyle
-      { placement: "LIFESTYLE", title: "Slides Season", titleAr: "موسم الشباشب", imageUrl: BANNER_IMG, linkUrl: "/category/slides", sortOrder: 0 },
-      { placement: "LIFESTYLE", title: "Beach Ready", titleAr: "جاهز للبحر", imageUrl: BANNER_IMG, linkUrl: "/category/sandals", sortOrder: 1 },
-      { placement: "LIFESTYLE", title: "City Moves", titleAr: "حركة المدينة", imageUrl: BANNER_IMG, linkUrl: "/category/sneakers", sortOrder: 2 },
-      { placement: "LIFESTYLE", title: "Home Comfort", titleAr: "راحة البيت", imageUrl: BANNER_IMG, linkUrl: "/category/slippers", sortOrder: 3 },
+      { placement: "LIFESTYLE", title: "Slides Season", titleAr: "موسم الشباشب", linkUrl: "/category/slides", config: { style: "linear-gradient(160deg,#94A98C,#5C7350)" }, sortOrder: 0 },
+      { placement: "LIFESTYLE", title: "Beach Ready", titleAr: "جاهز للبحر", linkUrl: "/category/sandals", config: { style: "linear-gradient(160deg,#C9B7A0,#8E7A5B)" }, sortOrder: 1 },
+      { placement: "LIFESTYLE", title: "City Moves", titleAr: "حركة المدينة", linkUrl: "/category/sneakers", config: { style: "linear-gradient(160deg,#AFC1D0,#5E7891)" }, sortOrder: 2 },
+      { placement: "LIFESTYLE", title: "Home Comfort", titleAr: "راحة البيت", linkUrl: "/category/slippers", config: { style: "linear-gradient(160deg,#D98C9C,#8B4A5C)" }, sortOrder: 3 },
       // side tab
       { placement: "SIDE_TAB", title: "GET 5% OFF", titleAr: "خصم ٥٪", linkUrl: "/pages/offers", sortOrder: 0 },
       // social grid
-      ...[0, 1, 2, 3, 4, 5].map((i) => ({
+      ...[
+        "linear-gradient(170deg,#94A98C,#4F6B44)",
+        "linear-gradient(170deg,#C9B7A0,#7E6C4E)",
+        "linear-gradient(170deg,#AFC1D0,#4E6881)",
+        "linear-gradient(170deg,#D98C9C,#7B3A4C)",
+        "linear-gradient(170deg,#9CA3AF,#4B5563)",
+        "linear-gradient(170deg,#7FA24B,#2F5217)",
+      ].map((style, i) => ({
         placement: "SOCIAL_GRID" as const,
         title: "#MakeMoves",
         titleAr: "#تحرّك",
-        imageUrl: BANNER_IMG,
+        subtitle: i === 0 ? "Tag us to get featured" : null,
         linkUrl: "https://instagram.com/",
+        config: { style },
         sortOrder: i,
       })),
     ],

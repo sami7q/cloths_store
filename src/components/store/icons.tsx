@@ -117,3 +117,29 @@ export function ChevronUpIcon({ className }: IconProps) {
     </svg>
   );
 }
+
+export function FacebookIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+      <path d="M13.5 21v-7h2.4l.4-3h-2.8V9.1c0-.9.3-1.5 1.6-1.5h1.3V4.9c-.3 0-1.1-.1-2-.1-2 0-3.4 1.2-3.4 3.5V11H8.5v3H11v7h2.5z" />
+    </svg>
+  );
+}
+
+export function InstagramIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className={className} aria-hidden>
+      <rect x="3.5" y="3.5" width="17" height="17" rx="4.5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+export function TikTokIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+      <path d="M16.6 3c.3 1.7 1.4 3 3.4 3.3v2.8c-1.3 0-2.5-.4-3.4-1v6.4c0 3.1-2.1 5.5-5.3 5.5A5.2 5.2 0 0 1 6 14.8c0-3 2.4-5.2 5.6-5V13c-.3-.1-.7-.2-1.1-.2-1.3 0-2.3 1-2.3 2.2 0 1.3 1 2.3 2.2 2.3 1.4 0 2.4-1 2.4-2.6V3h3.8z" />
+    </svg>
+  );
+}

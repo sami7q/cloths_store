@@ -13,7 +13,7 @@ export default async function AccountPage() {
   const t = messages.account;
 
   return (
-    <main className="container-store py-16">
+    <div className="container-store py-16">
       <div className="mx-auto max-w-[560px] rounded-3xl border border-line bg-white p-8">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -45,6 +45,6 @@ export default async function AccountPage() {
           </p>
         ) : null}
       </div>
-    </main>
+    </div>
   );
 }
