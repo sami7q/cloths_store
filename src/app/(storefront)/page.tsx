@@ -11,9 +11,9 @@ import { HeroBanner, HeroSideItem } from "@/components/store/hero-banner";
 import { SplitHeading } from "@/components/store/split-heading";
 import { CategoryCard } from "@/components/store/category-card";
 import { LifestyleCard } from "@/components/store/lifestyle-card";
-import { ProductCard } from "@/components/store/product-card";
+import { ShopProductCard } from "@/components/store/shop-product-card";
 import { SocialGrid } from "@/components/store/social-grid";
-import { buildProductCardProps } from "@/components/store/product-card-mapper";
+import { buildProductCardProps, buildQuickAddItem } from "@/components/store/product-card-mapper";
 import type { ProductForCard } from "@/server/storefront";
 
 // Homepage carousels — each slug is a Collection managed from admin.
@@ -66,7 +66,7 @@ export default async function HomePage() {
   const renderCards = (items: ProductForCard[]) => (
     <div className="grid grid-cols-4 gap-5 max-lg:grid-cols-2 max-md:grid-cols-1">
       {items.map((p) => (
-        <ProductCard key={p.id} {...buildProductCardProps(p, currency, promo)} />
+        <ShopProductCard key={p.id} {...buildProductCardProps(p, currency, promo)} quickAddItem={buildQuickAddItem(p)} />
       ))}
     </div>
   );

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { messages } from "@/lib/i18n";
-import { formatPrice } from "@/lib/format";
 import {
   getBanners,
   getNavCategories,
@@ -10,7 +9,7 @@ import {
 } from "@/server/storefront";
 import { PromoMarquee } from "@/components/store/promo-marquee";
 import { StoreHeader } from "@/components/store/store-header";
-import { MainNav } from "@/components/store/main-nav";
+import { NavClient } from "@/components/store/nav-client";
 import { DarkFooter } from "@/components/store/dark-footer";
 import { SideOfferTab } from "@/components/store/side-offer-tab";
 import { ScrollTopButton } from "@/components/store/scroll-top-button";
@@ -79,7 +78,8 @@ export default async function StorefrontLayout({ children }: { children: React.R
         accountLabel={t.common.account}
         accountHref="/account"
       />
-      <MainNav
+      <NavClient
+        currency={currency}
         links={[
           { label: t.store.home, href: "/", active: true },
           ...categories.map((c) => ({ label: c.name, href: `/category/${c.slug}` })),
@@ -91,8 +91,6 @@ export default async function StorefrontLayout({ children }: { children: React.R
         wishlistCount={wishlistCount}
         wishlistHref="/wishlist"
         wishlistLabel={t.common.wishlist}
-        cartCount={0}
-        cartTotalLabel={formatPrice(0, currency)}
         cartLabel={t.common.cart}
         cartHref="/cart"
       />

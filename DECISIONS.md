@@ -137,6 +137,45 @@ platform generic and admin-configurable.
 - **PDP metadata uses `seoTitle` as an absolute title** because seeded/admin
   seoTitle may already include the store name (avoids "X | Store | Store").
 
+## Phase 4 — Commerce
+
+- **Promo engine is pure** (`src/lib/promotions.ts`), 20 Vitest cases.
+  Documented semantics: units sorted price-descending, grouped by the largest
+  tier `nth`; within each group the nth unit gets its tier percent (repeats
+  per group). Bundles take the most expensive eligible units per full set
+  (customer-favorable). Order of application: item rules by priority → coupon
+  → CARD_EXTRA_PERCENT on discounted goods → shipping thresholds (rule, zone
+  freeOver, FREE_SHIPPING coupon) → COD fee.
+- **Cart contents live client-side** (Zustand + localStorage) as variant refs
+  + display snapshots; every quote and the order total are recomputed
+  server-side from the DB (`quoteCart`/`placeOrder`) — client prices are
+  never trusted.
+- **Quick add-to-cart on product cards uses the first in-stock variant**;
+  exact color/size selection happens on the PDP.
+- **Order placement is transactional**: conditional stock decrements
+  (`stock >= qty` guard → "stock_changed" error on race), coupon usage
+  increment, order + items + status log created atomically.
+- **Stale-session guard**: a JWT can outlive its user row (re-seeds, deleted
+  accounts) — `placeOrder` verifies the user id and falls back to guest.
+  Found live when a pre-reseed session hit the Order.userId FK.
+- **Stripe is env-gated** (Checkout Session redirect; single line item with
+  the server-computed total; order id in metadata; webhook verifies the
+  signature and marks PAID/CONFIRMED). Without STRIPE_SECRET_KEY the card
+  option renders disabled and COD remains available.
+- **Email is best-effort**: React Email template rendered via
+  @react-email/render + Nodemailer; without SMTP_HOST the send is skipped
+  with a log line — checkout never fails on mail. COD mails on placement;
+  card mails from the webhook after payment.
+- **Shipping zone matched by city name** (case-insensitive) with the
+  empty-cities zone as catch-all; the checkout shows the matched zone
+  (§5 "shipping method (zones)") rather than offering a manual choice.
+- **Playwright E2E deferred to Phase 7** (hardening) where all three specced
+  flows (checkout, admin product CRUD, admin order status) land together;
+  Phase 4 was verified by the promo unit tests + a live COD checkout
+  (ORD-1026) exercising promos, stock decrement, notification and mail
+  fallback. Vitest pinned to v3 + vite 6 (vitest 4's rolldown native binding
+  fails to install on this machine).
+
 ## ⚠ Pending tasks — before the final deployment phase
 
 - **Switch the datasource back to PostgreSQL:** set

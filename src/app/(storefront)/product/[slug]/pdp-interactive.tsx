@@ -1,7 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useCartStore } from "@/lib/cart-store";
 
 export type PdpVariant = {
   id: string;
@@ -10,11 +12,35 @@ export type PdpVariant = {
   size: string;
   stock: number;
   lowStockAt: number;
+  /** Server-computed unit price (variant override or base price). */
+  unitPrice: number;
   /** Pre-formatted variant price override, when it differs. */
   priceLabel: string | null;
 };
 
+export type PdpProduct = {
+  id: string;
+  slug: string;
+  name: string;
+  imageUrl: string | null;
+};
+
 export type PdpImage = { url: string; alt: string; variantColorRef: string | null };
+
+function cartPayload(product: PdpProduct, v: PdpVariant, imageUrl: string | null, quantity: number) {
+  return {
+    variantId: v.id,
+    productId: product.id,
+    slug: product.slug,
+    name: product.name,
+    colorName: v.colorName,
+    size: v.size,
+    imageUrl: imageUrl ?? product.imageUrl,
+    unitPrice: v.unitPrice,
+    maxStock: v.stock,
+    quantity,
+  };
+}
 
 type Labels = {
   color: string;
@@ -28,17 +54,21 @@ type Labels = {
 };
 
 export function PdpInteractive({
+  product,
   images,
   variants,
   labels,
   header,
 }: {
+  product: PdpProduct;
   images: PdpImage[];
   variants: PdpVariant[];
   labels: Labels;
   /** Server-rendered title + price block shown above the options. */
   header?: React.ReactNode;
 }) {
+  const router = useRouter();
+  const addToCart = useCartStore((s) => s.add);
   const colors = useMemo(() => {
     const seen = new Map<string, string>();
     for (const v of variants) if (!seen.has(v.colorName)) seen.set(v.colorName, v.colorHex);
@@ -191,11 +221,14 @@ export function PdpInteractive({
           </div>
         </div>
 
-        {/* Cart wiring lands in Phase 4 — buttons are present but inert. */}
-        <div className="flex flex-wrap gap-3" title={labels.cartComingSoon}>
+        <div className="flex flex-wrap gap-3">
           <button
             type="button"
             disabled={!selected || selected.stock <= 0}
+            onClick={() => {
+              if (!selected) return;
+              addToCart(cartPayload(product, selected, gallery[0]?.url ?? null, qty));
+            }}
             className="h-14 flex-1 rounded-full bg-navy px-8 text-[15px] font-extrabold uppercase tracking-[0.5px] text-white transition-colors hover:bg-navy-deep disabled:pointer-events-none disabled:opacity-50"
           >
             {labels.addToCart}
@@ -203,6 +236,11 @@ export function PdpInteractive({
           <button
             type="button"
             disabled={!selected || selected.stock <= 0}
+            onClick={() => {
+              if (!selected) return;
+              addToCart(cartPayload(product, selected, gallery[0]?.url ?? null, qty));
+              router.push("/checkout");
+            }}
             className="h-14 flex-1 rounded-full border-2 border-navy px-8 text-[15px] font-extrabold uppercase tracking-[0.5px] text-navy transition-colors hover:bg-navy hover:text-white disabled:pointer-events-none disabled:opacity-50"
           >
             {labels.buyNow}

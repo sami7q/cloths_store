@@ -1,7 +1,25 @@
-import { formatPrice, percentOff } from "@/lib/format";
+import { formatPrice, percentOff, toNumber } from "@/lib/format";
 import { messages } from "@/lib/i18n";
 import type { ProductForCard } from "@/server/storefront";
 import type { ProductCardProps, ProductCardSwatch } from "./product-card";
+import type { QuickAddItem } from "./shop-product-card";
+
+/** First in-stock variant → quick-add payload (null when fully OOS). */
+export function buildQuickAddItem(product: ProductForCard): QuickAddItem | null {
+  const variant = product.variants.find((v) => v.stock > 0);
+  if (!variant) return null;
+  return {
+    variantId: variant.id,
+    productId: product.id,
+    slug: product.slug,
+    name: product.name,
+    colorName: variant.colorName,
+    size: variant.size,
+    imageUrl: product.images[0]?.url ?? null,
+    unitPrice: toNumber(variant.price ?? product.basePrice),
+    maxStock: variant.stock,
+  };
+}
 
 const MAX_SWATCHES = 4;
 const MAX_SIZES = 5;

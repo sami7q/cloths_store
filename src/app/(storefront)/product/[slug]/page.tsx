@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { messages } from "@/lib/i18n";
-import { formatPrice, percentOff } from "@/lib/format";
+import { formatPrice, percentOff, toNumber } from "@/lib/format";
 import {
   getProductBySlug,
   getPromoFacts,
@@ -10,8 +10,8 @@ import {
   getStoreSettings,
 } from "@/server/storefront";
 import { SplitHeading } from "@/components/store/split-heading";
-import { ProductCard } from "@/components/store/product-card";
-import { buildProductCardProps } from "@/components/store/product-card-mapper";
+import { ShopProductCard } from "@/components/store/shop-product-card";
+import { buildProductCardProps, buildQuickAddItem } from "@/components/store/product-card-mapper";
 import { PdpInteractive } from "./pdp-interactive";
 
 export async function generateMetadata({
@@ -71,6 +71,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       </nav>
 
       <PdpInteractive
+        product={{
+          id: product.id,
+          slug: product.slug,
+          name: product.name,
+          imageUrl: product.images[0]?.url ?? null,
+        }}
         images={product.images.map((i) => ({ url: i.url, alt: i.alt, variantColorRef: i.variantColorRef }))}
         variants={product.variants.map((v) => ({
           id: v.id,
@@ -79,6 +85,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           size: v.size,
           stock: v.stock,
           lowStockAt: v.lowStockAt,
+          unitPrice: toNumber(v.price ?? product.basePrice),
           priceLabel: v.price ? formatPrice(v.price, currency) : null,
         }))}
         labels={{
@@ -205,7 +212,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <SplitHeading left={t.relatedProducts.split(" ")[0]} right={t.relatedProducts.split(" ").slice(1).join(" ")} />
           <div className="grid grid-cols-4 gap-5 max-lg:grid-cols-2 max-md:grid-cols-1">
             {related.map((p) => (
-              <ProductCard key={p.id} {...buildProductCardProps(p, currency, promo)} />
+              <ShopProductCard key={p.id} {...buildProductCardProps(p, currency, promo)} quickAddItem={buildQuickAddItem(p)} />
             ))}
           </div>
         </section>

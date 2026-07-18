@@ -2,8 +2,8 @@ import { messages } from "@/lib/i18n";
 import { getPromoFacts, getStoreSettings, queryProducts } from "@/server/storefront";
 import { parseFilters, type SearchParams } from "@/lib/catalog-params";
 import { SplitHeading } from "@/components/store/split-heading";
-import { ProductCard } from "@/components/store/product-card";
-import { buildProductCardProps } from "@/components/store/product-card-mapper";
+import { ShopProductCard } from "@/components/store/shop-product-card";
+import { buildProductCardProps, buildQuickAddItem } from "@/components/store/product-card-mapper";
 
 export const metadata = { title: messages.store.searchResults };
 
@@ -38,7 +38,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
       ) : (
         <div className="grid grid-cols-4 gap-5 max-lg:grid-cols-2 max-md:grid-cols-1">
           {result.products.map((p) => (
-            <ProductCard key={p.id} {...buildProductCardProps(p, currency, promo)} />
+            <ShopProductCard key={p.id} {...buildProductCardProps(p, currency, promo)} quickAddItem={buildQuickAddItem(p)} />
           ))}
         </div>
       )}

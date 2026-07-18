@@ -11,8 +11,8 @@ import {
   type CatalogFilters,
 } from "@/server/storefront";
 import { SplitHeading } from "@/components/store/split-heading";
-import { ProductCard } from "@/components/store/product-card";
-import { buildProductCardProps } from "@/components/store/product-card-mapper";
+import { ShopProductCard } from "@/components/store/shop-product-card";
+import { buildProductCardProps, buildQuickAddItem } from "@/components/store/product-card-mapper";
 import { Badge } from "@/components/ui/badge";
 import { buildHref, parseFilters, toggleHref, type SearchParams } from "@/lib/catalog-params";
 
@@ -247,9 +247,10 @@ export default async function CategoryPage({
           ) : (
             <div className="grid grid-cols-3 gap-5 max-lg:grid-cols-2 max-md:grid-cols-1">
               {result.products.map((p) => (
-                <ProductCard
+                <ShopProductCard
                   key={p.id}
                   {...buildProductCardProps(p, currency, promo)}
+                  quickAddItem={buildQuickAddItem(p)}
                 />
               ))}
             </div>
