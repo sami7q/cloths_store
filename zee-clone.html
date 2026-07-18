@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HOME - ZEE ™ (Clone)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&family=Cairo:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#16294E;
+  --navy-deep:#0F1E3C;
+  --ink:#1A1A1A;
+  --gray-6:#6B7280;
+  --gray-4:#9CA3AF;
+  --line:#E5E7EB;
+  --card-bg:#F7F7F5;
+  --deal-red:#8B1F2F;
+  --deal-bg:#FBF3F4;
+  --save-green:#3E5233;
+  --white:#FFFFFF;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Archivo',sans-serif;color:var(--ink);background:var(--white)}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+.container{max-width:1440px;margin:0 auto;padding:0 24px}
+
+/* ============ TOP PROMO MARQUEE ============ */
+.promo-bar{background:var(--navy);color:#fff;overflow:hidden;position:relative;height:44px;display:flex;align-items:center}
+.promo-track{display:flex;gap:0;white-space:nowrap;animation:marquee 28s linear infinite;will-change:transform}
+.promo-bar:hover .promo-track{animation-play-state:paused}
+.promo-item{display:inline-flex;align-items:center;gap:14px;font-weight:700;font-size:15px;letter-spacing:.2px;padding:0 28px}
+.promo-item::after{content:"";display:inline-block;width:120px;height:2px;background:rgba(255,255,255,.85);margin-left:28px;border-radius:2px}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ============ SIDE OFFER TAB ============ */
+.offer-tab{position:fixed;left:0;top:42%;z-index:60;background:var(--navy-deep);color:#fff;writing-mode:vertical-rl;transform:rotate(180deg);padding:22px 12px;font-weight:800;font-size:14px;letter-spacing:2px;border-radius:0 6px 6px 0;box-shadow:2px 2px 10px rgba(0,0,0,.2)}
+.offer-tab .x{position:absolute;top:-10px;right:-10px;writing-mode:horizontal-tb;transform:rotate(180deg);background:#fff;color:var(--ink);border:1px solid var(--line);width:22px;height:22px;border-radius:50%;font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+
+/* ============ HEADER ============ */
+.header{padding:22px 0;background:#fff}
+.header-inner{display:flex;align-items:center;gap:32px}
+.logo{flex-shrink:0}
+.logo svg{height:52px;width:auto}
+.search-wrap{flex:1;position:relative}
+.search-input{width:100%;height:56px;border:1px solid var(--line);border-radius:32px;padding:0 64px 0 26px;font-size:16px;color:var(--ink);background:#fff;outline:none;transition:border-color .2s}
+.search-input::placeholder{color:var(--gray-4)}
+.search-input:focus{border-color:var(--navy)}
+.search-btn{position:absolute;right:6px;top:6px;width:44px;height:44px;border-radius:50%;background:var(--navy);border:none;display:flex;align-items:center;justify-content:center}
+.search-btn svg{width:18px;height:18px;stroke:#fff}
+.header-meta{display:flex;align-items:center;gap:22px;flex-shrink:0}
+.hotline{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:.5px}
+.hotline svg{width:30px;height:30px;stroke:var(--ink)}
+.account-btn{background:none;border:none}
+.account-btn svg{width:28px;height:28px;stroke:var(--ink)}
+
+/* ============ NAV ============ */
+.nav{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#fff;position:sticky;top:0;z-index:50}
+.nav-inner{display:flex;align-items:center;height:76px;gap:8px}
+.nav-links{display:flex;align-items:center;gap:4px;flex:1}
+.nav-link{font-weight:700;font-size:15.5px;letter-spacing:.4px;text-transform:uppercase;padding:10px 14px;border-radius:6px;display:flex;align-items:center;gap:6px;transition:background .15s;position:relative}
+.nav-link:hover{background:#F3F4F6}
+.nav-link.active{color:var(--ink)}
+.nav-link.active::after{content:"";position:absolute;left:14px;right:14px;bottom:2px;height:3px;background:var(--navy);border-radius:2px}
+.caret{width:0;height:0;border-left:4.5px solid transparent;border-right:4.5px solid transparent;border-top:5px solid var(--ink);margin-top:2px}
+.nav-right{display:flex;align-items:center;gap:20px}
+.nav-secondary{font-weight:700;font-size:15.5px;letter-spacing:.4px;text-transform:uppercase;padding:10px 6px}
+.wishlist{display:flex;align-items:center;gap:6px;font-weight:700}
+.wishlist svg{width:26px;height:26px;stroke:var(--ink);fill:none;stroke-width:1.6}
+.cart-pill{display:flex;align-items:center;gap:12px;background:var(--navy);color:#fff;border:none;border-radius:34px;padding:12px 26px 12px 16px;font-weight:800;font-size:17px;position:relative}
+.cart-pill .bag{width:38px;height:38px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.cart-pill .bag svg{width:18px;height:18px;stroke:var(--navy)}
+.cart-badge{position:absolute;top:-6px;right:-2px;background:var(--navy-deep);border:2px solid #fff;color:#fff;font-size:11px;font-weight:800;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+
+/* ============ HERO ============ */
+.hero{padding:28px 0 8px}
+.hero-grid{display:grid;grid-template-columns:1fr 280px;gap:20px}
+.hero-banner{position:relative;border-radius:8px;overflow:hidden;min-height:560px;background:
+  radial-gradient(ellipse 90% 70% at 75% 100%, #DDD3C4 0%, transparent 55%),
+  radial-gradient(ellipse 60% 80% at 10% 20%, #1E3B23 0%, transparent 70%),
+  radial-gradient(ellipse 70% 90% at 95% 10%, #2C5233 0%, transparent 65%),
+  linear-gradient(135deg,#28472B 0%, #3E6B41 45%, #6E8F5E 75%, #C9BFA8 100%);
+  display:flex;flex-direction:column;justify-content:center;padding:60px}
+.hero-leaf{position:absolute;opacity:.35;fill:#0E2413}
+.hero-title-ar{font-family:'Cairo',sans-serif;font-weight:900;color:#fff;font-size:88px;line-height:1;direction:rtl;text-shadow:0 4px 30px rgba(0,0,0,.25)}
+.hero-sub{color:#F2F0E8;font-size:34px;font-weight:600;margin-top:18px;letter-spacing:.3px;text-shadow:0 2px 16px rgba(0,0,0,.3)}
+.hero-bottom{margin-top:auto;position:relative;z-index:2}
+.hero-tag{display:inline-block;background:rgba(120,40,60,.85);color:#fff;font-weight:700;font-size:16px;padding:8px 22px;border-radius:24px;margin-bottom:14px}
+.hero-caption{color:#EFEDE4;font-size:17px;line-height:1.5;max-width:420px;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+.hero-swoosh{position:absolute;bottom:36px;right:44%;width:70px;opacity:.9}
+.hero-side{display:flex;flex-direction:column;justify-content:space-between;padding:8px 0}
+.eva-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 0}
+.eva-item svg{width:120px;height:76px}
+.eva-name{font-weight:800;font-size:19px;margin-top:2px}
+.eva-type{font-size:11.5px;color:var(--gray-6);font-weight:600;letter-spacing:.4px}
+
+/* ============ SECTION HEADINGS ============ */
+.split-heading{display:flex;align-items:center;gap:24px;margin:54px 0 30px}
+.split-heading .word{font-family:'Oswald',sans-serif;font-weight:700;font-size:44px;letter-spacing:1px;text-transform:uppercase;color:var(--ink);white-space:nowrap}
+.split-heading .rule{flex:1;height:2px;background:var(--ink)}
+
+/* ============ CATEGORIES ============ */
+.cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:20px}
+.cat-card{border:1px solid var(--line);border-radius:10px;background:#fff;display:flex;align-items:center;height:104px;padding:0 8px;transition:box-shadow .2s,transform .2s}
+.cat-card:hover{box-shadow:0 10px 24px rgba(22,41,78,.10);transform:translateY(-2px)}
+.cat-icon{flex:1;display:flex;align-items:center;justify-content:center}
+.cat-icon svg{width:84px;height:56px;stroke:var(--navy);fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.cat-sep{width:1px;height:56px;background:var(--line)}
+.cat-name{flex:1;text-align:center;font-weight:700;font-size:19px;line-height:1.15;color:var(--ink)}
+
+/* ============ LIFESTYLE CARDS ============ */
+.life-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:48px}
+.life-card{position:relative;border-radius:6px;overflow:hidden;aspect-ratio:3/4.2;display:flex;align-items:flex-start;padding:34px 26px}
+.life-card h3{color:#fff;font-size:30px;font-weight:600;line-height:1.2;text-shadow:0 2px 18px rgba(0,0,0,.35);position:relative;z-index:2;text-align:center;width:100%}
+.life-card.dark h3{color:#1E2A3A;text-shadow:none}
+.life-1{background:linear-gradient(160deg,#3C5B33 0%,#5C7A45 50%,#8AA061 100%)}
+.life-2{background:linear-gradient(165deg,#7A6A55 0%,#A08B6E 55%,#C9B394 100%)}
+.life-3{background:linear-gradient(170deg,#7FA9C9 0%,#A9C4D8 45%,#D9CDB2 100%)}
+.life-4{background:linear-gradient(165deg,#E3D3B5 0%,#EFE2C8 50%,#F5EBD6 100%)}
+.life-card::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 120% 60% at 50% 120%, rgba(0,0,0,.28), transparent 60%)}
+
+/* ============ PRODUCT CARDS ============ */
+.section{margin-top:64px}
+.prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.prod-card{background:#fff;border-radius:10px;position:relative;padding:0 0 20px;transition:box-shadow .25s}
+.prod-card:hover{box-shadow:0 14px 34px rgba(0,0,0,.09)}
+.prod-media{position:relative;background:var(--card-bg);border-radius:10px;aspect-ratio:1/1.05;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.prod-media svg.shoe{width:78%;height:auto;filter:drop-shadow(0 14px 10px rgba(0,0,0,.14));transition:transform .3s}
+.prod-card:hover .prod-media svg.shoe{transform:scale(1.05) rotate(-2deg)}
+.save-badge{position:absolute;top:16px;left:16px;background:var(--save-green);color:#fff;font-weight:700;font-size:13.5px;padding:7px 16px;border-radius:20px;z-index:2}
+.wish-btn{position:absolute;top:14px;right:14px;background:none;border:none;z-index:2}
+.wish-btn svg{width:26px;height:26px;stroke:var(--ink);fill:none;stroke-width:1.6;transition:fill .2s,stroke .2s}
+.wish-btn:hover svg{fill:var(--deal-red);stroke:var(--deal-red)}
+.prod-body{padding:18px 6px 0}
+.prod-name{font-weight:800;font-size:20px;letter-spacing:.2px}
+.prod-material{color:var(--gray-4);font-size:16.5px;margin-top:6px;font-weight:500}
+.price-row{display:flex;align-items:baseline;gap:10px;margin-top:22px}
+.price-old{color:var(--gray-4);font-size:16px;text-decoration:line-through;font-weight:600}
+.price-now{font-weight:800;font-size:24px}
+.deal-box{display:inline-flex;align-items:center;gap:10px;border:1.5px solid var(--deal-red);background:var(--deal-bg);border-radius:8px;padding:9px 12px;margin-top:12px}
+.deal-box .cardic{width:18px;height:14px;border:1.8px solid var(--deal-red);border-radius:2.5px;position:relative}
+.deal-box .cardic::after{content:"";position:absolute;top:2.5px;left:0;right:0;height:2.5px;background:var(--deal-red)}
+.deal-price{font-weight:800;font-size:16px;color:var(--ink)}
+.deal-tag{background:var(--deal-red);color:#fff;font-size:10.5px;font-weight:800;letter-spacing:.4px;padding:4px 9px;border-radius:5px}
+.pay-note{margin-top:12px;color:var(--gray-6);font-size:14px;font-weight:500}
+.pay-note b{color:var(--ink);font-weight:700}
+.swatches{display:flex;gap:9px;margin-top:14px;align-items:center}
+.swatch{width:26px;height:26px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1.5px var(--line);cursor:pointer;transition:transform .15s}
+.swatch:hover{transform:scale(1.12)}
+.swatch.sel{box-shadow:0 0 0 2px var(--ink)}
+.more-sw{font-weight:700;font-size:14px;color:var(--ink)}
+.sizes{display:flex;gap:8px;margin-top:14px;align-items:center;flex-wrap:wrap}
+.size{min-width:42px;height:34px;border:1px solid var(--line);border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14.5px;color:var(--gray-6);cursor:pointer}
+.size.sel{border-color:var(--ink);color:var(--ink)}
+.dots{display:flex;gap:10px;justify-content:center;margin-top:34px}
+.dot{width:10px;height:10px;border-radius:50%;background:#D1D5DB;cursor:pointer}
+.dot.on{background:var(--ink)}
+
+/* popular-for-her layout with tall image */
+.her-grid{display:grid;grid-template-columns:repeat(4,1fr) 1.55fr;gap:22px}
+.her-photo{border-radius:6px;background:
+  radial-gradient(ellipse 70% 45% at 60% 80%, #C4577F 0%, transparent 40%),
+  linear-gradient(165deg,#C9A374 0%,#D9B98C 45%,#E7CFA6 100%);
+  position:relative;overflow:hidden;min-height:600px}
+.her-photo::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 90% 40% at 50% 110%,rgba(0,0,0,.22),transparent 60%)}
+
+/* ============ MAKEMOVES ============ */
+.makemoves{margin-top:80px}
+.mm-head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap}
+.mm-title{font-weight:800;font-size:clamp(64px,9vw,132px);letter-spacing:-3px;line-height:.95}
+.mm-tag{font-weight:700;font-size:24px;padding-bottom:18px}
+.mm-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-top:44px}
+.mm-tile{aspect-ratio:5/8;border-radius:4px;position:relative;overflow:hidden;cursor:pointer;transition:transform .25s}
+.mm-tile:hover{transform:scale(1.02)}
+.mm-tile::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.35))}
+.mm-1{background:linear-gradient(160deg,#5A4E44 0%,#8A7A66 60%,#B5A48C 100%)}
+.mm-2{background:linear-gradient(160deg,#7A5A3A 0%,#A8825A 55%,#D0AC7E 100%)}
+.mm-3{background:linear-gradient(165deg,#8FA8B8 0%,#C2A98E 55%,#E2CBA8 100%)}
+.mm-4{background:radial-gradient(circle at 30% 30%,#C463A8 0%,transparent 30%),radial-gradient(circle at 70% 50%,#4A7AC4 0%,transparent 30%),radial-gradient(circle at 45% 75%,#C4A044 0%,transparent 32%),linear-gradient(160deg,#6E5A7A,#9A8AA8)}
+.mm-5{background:linear-gradient(165deg,#2E7A72 0%,#48A896 60%,#7AC4B0 100%)}
+.mm-6{background:linear-gradient(165deg,#3A3A42 0%,#6A6A78 55%,#A0A0AC 100%)}
+
+/* ============ FOOTER (dark) ============ */
+.footer{margin-top:90px;background:#000;color:#fff;padding:72px 0 36px}
+.footer-grid{display:grid;grid-template-columns:2.1fr 1fr 1fr 1.5fr;gap:56px}
+.footer h4{font-weight:700;font-size:27px;margin-bottom:26px;letter-spacing:.2px}
+.footer p{color:#fff;font-size:17px;line-height:1.65;font-weight:500;max-width:560px}
+.footer ul{list-style:none}
+.footer li{margin-bottom:20px}
+.footer li a{color:#fff;font-size:18px;font-weight:600;transition:opacity .15s}
+.footer li a:hover{opacity:.7}
+.social-title{font-weight:700;font-size:27px;margin:46px 0 22px}
+.social-row{display:flex;gap:16px}
+.social-btn{width:46px;height:46px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.social-btn:hover{transform:scale(1.08)}
+.social-btn svg{width:22px;height:22px;fill:#000}
+.news-note{color:#fff;font-size:17px;font-weight:600;line-height:1.5;margin-top:56px}
+.newsletter{display:flex;gap:12px;margin-top:22px}
+.newsletter input{flex:1;border:none;outline:none;padding:0 26px;font-size:16px;font-family:inherit;height:56px;border-radius:30px;background:#fff;color:var(--ink)}
+.newsletter input::placeholder{color:var(--gray-4)}
+.newsletter button{background:var(--navy);color:#fff;border:none;font-weight:800;font-size:15px;letter-spacing:.5px;padding:0 34px;height:56px;border-radius:30px;text-transform:uppercase}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;gap:30px;margin-top:80px;flex-wrap:wrap}
+.copyright{color:#fff;font-size:15px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase}
+.copyright .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#fff;margin:0 12px;vertical-align:middle}
+.copyright b{font-weight:800}
+.oval-logo{background:#fff;border-radius:50%/46%;padding:14px 40px;display:flex;align-items:center;gap:10px}
+.oval-logo .ar{font-family:'Cairo',sans-serif;font-weight:900;font-size:38px;color:#000;line-height:1}
+.oval-logo .en{font-weight:800;font-size:40px;color:#000;letter-spacing:-1px;line-height:1}
+.pay-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.pay-badge{height:34px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;letter-spacing:.3px}
+.pay-mc{width:52px}
+.pay-mc svg{width:100%;height:100%}
+.pay-visa{color:#1A1F71;background:#fff;border-radius:6px;padding:0 12px;font-style:italic;font-size:18px}
+.pay-cod{background:#D42B2B;color:#fff;border-radius:8px;padding:0 10px;font-size:11px;text-align:center;line-height:1.1;text-transform:uppercase}
+.pay-sympl{color:#fff;background:#E0457B;border-radius:8px;padding:0 12px;font-size:16px}
+.pay-apay{background:#fff;color:#000;border-radius:6px;padding:0 12px;font-size:16px}
+.pay-valu{background:#fff;color:#2B3A8C;border-radius:16px;padding:0 14px;font-size:16px}
+
+/* scroll to top */
+.to-top{position:fixed;right:34px;bottom:34px;width:56px;height:56px;border-radius:50%;background:#fff;border:1px solid var(--line);box-shadow:0 8px 24px rgba(0,0,0,.12);display:flex;align-items:center;justify-content:center;z-index:60}
+.to-top svg{width:20px;height:20px;stroke:var(--ink);stroke-width:2.4;fill:none}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:1180px){
+  .cat-grid{grid-template-columns:repeat(3,1fr)}
+  .prod-grid{grid-template-columns:repeat(3,1fr)}
+  .her-grid{grid-template-columns:repeat(3,1fr)}
+  .her-photo{display:none}
+  .life-grid{grid-template-columns:repeat(2,1fr)}
+  .hero-grid{grid-template-columns:1fr}
+  .hero-side{flex-direction:row}
+  .nav-links{overflow-x:auto}
+}
+@media (max-width:1180px){
+  .mm-grid{grid-template-columns:repeat(3,1fr)}
+  .footer-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:760px){
+  .header-inner{flex-wrap:wrap;gap:14px}
+  .search-wrap{order:3;width:100%;flex:none}
+  .hotline{font-size:17px}
+  .cat-grid,.prod-grid,.her-grid{grid-template-columns:repeat(2,1fr)}
+  .life-grid{grid-template-columns:1fr}
+  .hero-title-ar{font-size:54px}
+  .hero-sub{font-size:24px}
+  .hero-banner{padding:32px;min-height:440px}
+  .split-heading .word{font-size:30px}
+  .footer-grid{grid-template-columns:1fr;gap:40px}
+  .mm-grid{grid-template-columns:repeat(2,1fr)}
+  .mm-tag{font-size:18px}
+  .footer-bottom{justify-content:center;text-align:center}
+  .nav-secondary{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== TOP PROMO MARQUEE ===== -->
+<div class="promo-bar">
+  <div class="promo-track" id="promoTrack">
+    <span class="promo-item">2nd item -15% &nbsp;|&nbsp; 3rd item -30% &nbsp;|&nbsp; Free Shipping 800+ EGP &nbsp;|&nbsp; +15% with Card</span>
+    <span class="promo-item">Get 3 Classics for 3999 EGP ✨</span>
+    <span class="promo-item">Get 3 Zanooba for 1199 EGP ✨</span>
+    <span class="promo-item">Any 3 EVA Pieces for only 999 EGP ✨</span>
+  </div>
+</div>
+
+<!-- ===== SIDE OFFER TAB ===== -->
+<div class="offer-tab" id="offerTab">GET 5% OFF<span class="x" onclick="document.getElementById('offerTab').style.display='none'">✕</span></div>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+  <div class="container header-inner">
+    <a href="#" class="logo" aria-label="ZEE home">
+      <!-- swoosh-style logo placeholder -->
+      <svg viewBox="0 0 120 60" xmlns="http://www.w3.org/2000/svg">
+        <path d="M6 38 C 30 8, 58 4, 86 12 C 70 14, 52 22, 44 30 C 62 26, 84 24, 112 30 C 84 34, 56 44, 34 54 C 40 46, 44 40, 46 36 C 32 40, 16 40, 6 38 Z" fill="#111"/>
+      </svg>
+    </a>
+    <div class="search-wrap">
+      <input class="search-input" type="text" placeholder="What are you looking for?">
+      <button class="search-btn" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+      </button>
+    </div>
+    <div class="header-meta">
+      <div class="hotline">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16V8a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v8"/><path d="M16 10h3l2 3v3h-2"/><circle cx="7" cy="17" r="1.8"/><circle cx="16" cy="17" r="1.8"/><path d="M3 16h18"/></svg>
+        16772
+      </div>
+      <button class="account-btn" aria-label="Account">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-5.5 8-5.5s6.5 1.5 8 5.5"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== NAV ===== -->
+<nav class="nav">
+  <div class="container nav-inner">
+    <div class="nav-links">
+      <a class="nav-link active" href="#">Home</a>
+      <a class="nav-link" href="#">New Arrivals</a>
+      <a class="nav-link" href="#">Women <span class="caret"></span></a>
+      <a class="nav-link" href="#">Men <span class="caret"></span></a>
+      <a class="nav-link" href="#">Kids <span class="caret"></span></a>
+      <a class="nav-link" href="#">Collection <span class="caret"></span></a>
+      <a class="nav-link" href="#">Sale</a>
+    </div>
+    <div class="nav-right">
+      <a class="nav-secondary" href="#">About Us</a>
+      <a class="nav-secondary" href="#">Contact</a>
+      <a class="wishlist" href="#" aria-label="Wishlist">
+        <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.3-8.6C.9 8 2.6 4.6 6 4.3c2-.2 3.6.8 4.6 2.3.4.6 1.4.6 1.8 0 1-1.5 2.6-2.5 4.6-2.3 3.4.3 5.1 3.7 3.3 7.1C19 15.4 12 20 12 20z"/></svg>
+        <span>0</span>
+      </a>
+      <button class="cart-pill">
+        <span class="bag"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg></span>
+        0 EGP
+        <span class="cart-badge">0</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-banner">
+      <!-- decorative leaves -->
+      <svg class="hero-leaf" style="top:-30px;left:-40px;width:340px" viewBox="0 0 200 200"><path d="M100 10 C 60 60, 60 140, 100 190 C 140 140, 140 60, 100 10 Z"/></svg>
+      <svg class="hero-leaf" style="bottom:-50px;right:-30px;width:300px;transform:rotate(40deg)" viewBox="0 0 200 200"><path d="M100 10 C 55 65, 55 135, 100 190 C 145 135, 145 65, 100 10 Z"/></svg>
+      <div style="position:relative;z-index:2">
+        <div class="hero-title-ar">شبشب زنوبا</div>
+        <div class="hero-sub">Comfort With Personality</div>
+      </div>
+      <div class="hero-bottom">
+        <span class="hero-tag">New Arrivals</span>
+        <p class="hero-caption">Lightweight comfort with playful Zee Charms to match your vibe.</p>
+      </div>
+      <svg class="hero-swoosh" viewBox="0 0 120 60"><path d="M6 38 C 30 8, 58 4, 86 12 C 70 14, 52 22, 44 30 C 62 26, 84 24, 112 30 C 84 34, 56 44, 34 54 C 40 46, 44 40, 46 36 C 32 40, 16 40, 6 38 Z" fill="#0F1E3C"/></svg>
+    </div>
+
+    <!-- EVA color sidebar -->
+    <aside class="hero-side">
+      <div class="eva-item">
+        <svg viewBox="0 0 120 76"><ellipse cx="60" cy="58" rx="46" ry="14" fill="#E8DBC0"/><path d="M60 18 C 60 38, 40 44, 30 54 M60 18 C 60 38, 80 44, 90 54" stroke="#DECBA4" stroke-width="7" fill="none" stroke-linecap="round"/></svg>
+        <div class="eva-name">Sand</div><div class="eva-type">EVA · Ultra</div>
+      </div>
+      <div class="eva-item">
+        <svg viewBox="0 0 120 76"><ellipse cx="60" cy="58" rx="46" ry="14" fill="#1E2A4A"/><path d="M60 18 C 60 38, 40 44, 30 54 M60 18 C 60 38, 80 44, 90 54" stroke="#152039" stroke-width="7" fill="none" stroke-linecap="round"/></svg>
+        <div class="eva-name">Navy</div><div class="eva-type">EVA · Ultra</div>
+      </div>
+      <div class="eva-item">
+        <svg viewBox="0 0 120 76"><ellipse cx="60" cy="58" rx="46" ry="14" fill="#C77964"/><path d="M60 18 C 60 38, 40 44, 30 54 M60 18 C 60 38, 80 44, 90 54" stroke="#B0604C" stroke-width="7" fill="none" stroke-linecap="round"/></svg>
+        <div class="eva-name">Coral</div><div class="eva-type">EVA · Ultra</div>
+      </div>
+      <div class="eva-item">
+        <svg viewBox="0 0 120 76"><ellipse cx="60" cy="58" rx="46" ry="14" fill="#EDEDEA"/><path d="M60 18 C 60 38, 40 44, 30 54 M60 18 C 60 38, 80 44, 90 54" stroke="#D8D8D4" stroke-width="7" fill="none" stroke-linecap="round"/></svg>
+        <div class="eva-name">Mist</div><div class="eva-type">EVA · Ultra</div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ===== SHOP BY CATEGORY ===== -->
+<section class="container">
+  <div class="split-heading">
+    <span class="word">Shop By</span>
+    <span class="rule"></span>
+    <span class="word">Category</span>
+  </div>
+
+  <div class="cat-grid">
+    <div class="cat-card"><div class="cat-icon"><svg viewBox="0 0 84 56"><circle cx="42" cy="24" r="10"/><path d="M42 34v10M36 50h12"/></svg></div><div class="cat-sep"></div><div class="cat-name">Charms</div></div>
+    <div class="cat-card"><div class="cat-icon"><svg viewBox="0 0 84 56"><path d="M10 40 C 10 26, 26 16, 44 16 C 62 16, 76 24, 76 34 L 76 40 C 76 43, 73 45, 70 45 L 16 45 C 12 45, 10 43, 10 40 Z"/><path d="M34 16 C 36 22, 50 22, 52 16"/></svg></div><div class="cat-sep"></div><div class="cat-name">Loafers</div></div>
+    <div class="cat-card"><div class="cat-icon"><svg viewBox="0 0 84 56"><path d="M30 8 L 22 12 L 12 24 L 20 30 L 24 26 L 24 50 L 60 50 L 60 26 L 64 30 L 72 24 L 62 12 L 54 8 C 50 14, 34 14, 30 8 Z"/></svg></div><div class="cat-sep"></div><div class="cat-name">T-Shirts</div></div>
+    <div class="cat-card"><div class="cat-icon"><svg viewBox="0 0 84 56"><path d="M8 42 C 8 30, 20 18, 34 18 L 40 26 L 70 32 C 75 33, 78 36, 78 40 L 78 44 L 8 44 Z"/><path d="M40 26 L 48 22 M46 28 L 54 24 M52 30 L 60 26"/></svg></div><div class="cat-sep"></div><div class="cat-name">Sneakers</div></div>
+    <div class="cat-card"><div class="cat-icon"><svg viewBox="0 0 84 56"><path d="M8 44 C 8 40, 12 38, 20 38 L 64 38 C 72 38, 78 40, 78 44 L 78 46 L 8 46 Z"/><path d="M22 38 C 28 24, 56 24, 62 38"/><rect x="38" y="26" width="10" height="7" rx="1.5"/></svg></div><div class="cat-sep"></div><div class="cat-name">One<br>Straps</div></div>
+    <div class="cat-card"><div class="cat-icon"><svg viewBox="0 0 84 56"><path d="M14 46 L 14 22 C 14 14, 20 10, 26 10 L 34 10 C 40 10, 44 14, 44 22 L 44 46 Z"/><path d="M44 40 L 68 40 C 74 40, 78 42, 78 46 L 14 46"/></svg></div><div class="cat-sep"></div><div class="cat-name">Boots</div></div>
+    <div class="cat-card"><div class="cat-icon"><svg viewBox="0 0 84 56"><path d="M10 40 C 10 26, 24 16, 42 16 C 60 16, 74 24, 74 36 L 74 42 C 74 45, 71 46, 68 46 L 16 46 C 12 46, 10 44, 10 40 Z"/><rect x="34" y="20" width="12" height="8" rx="2"/></svg></div><div class="cat-sep"></div><div class="cat-name">Clogs</div></div>
+    <div class="cat-card"><div class="cat-icon"><svg viewBox="0 0 84 56"><path d="M8 44 C 8 40, 12 38, 20 38 L 64 38 C 72 38, 78 40, 78 44 L 78 46 L 8 46 Z"/><path d="M20 38 C 24 30, 34 28, 38 34 M46 34 C 50 26, 60 28, 64 38"/><rect x="26" y="29" width="8" height="6" rx="1.5"/><rect x="50" y="27" width="8" height="6" rx="1.5"/></svg></div><div class="cat-sep"></div><div class="cat-name">Two<br>Straps</div></div>
+    <div class="cat-card"><div class="cat-icon"><svg viewBox="0 0 84 56"><path d="M8 44 C 8 40, 12 38, 20 38 L 64 38 C 72 38, 78 40, 78 44 L 78 46 L 8 46 Z"/><path d="M28 38 C 40 22, 56 26, 62 38"/></svg></div><div class="cat-sep"></div><div class="cat-name">Flip -<br>Flops</div></div>
+    <div class="cat-card"><div class="cat-icon"><svg viewBox="0 0 84 56"><path d="M8 44 C 8 40, 12 38, 20 38 L 64 38 C 72 38, 78 40, 78 44 L 78 46 L 8 46 Z"/><path d="M24 38 C 28 30, 36 28, 40 32 M44 32 C 46 26, 56 26, 60 38"/><rect x="32" y="27" width="9" height="6" rx="1.5"/></svg></div><div class="cat-sep"></div><div class="cat-name">Thong</div></div>
+  </div>
+
+  <!-- lifestyle -->
+  <div class="life-grid">
+    <div class="life-card life-1"><h3>Made For<br>Real Moments</h3></div>
+    <div class="life-card life-2"><h3>Designed<br>To Feel Right</h3></div>
+    <div class="life-card life-3"><h3>The Beauty<br>Of Slowing Down</h3></div>
+    <div class="life-card life-4 dark"><h3>Where Comfort<br>Meets Character</h3></div>
+  </div>
+</section>
+
+<!-- ===== NEW ARRIVALS ===== -->
+<section class="container section">
+  <div class="split-heading">
+    <span class="word">New</span>
+    <span class="rule"></span>
+    <span class="word">Arrivals</span>
+  </div>
+
+  <div class="prod-grid">
+
+    <!-- BABUTCHA -->
+    <article class="prod-card">
+      <div class="prod-media">
+        <button class="wish-btn" aria-label="Add to wishlist"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.3-8.6C.9 8 2.6 4.6 6 4.3c2-.2 3.6.8 4.6 2.3.4.6 1.4.6 1.8 0 1-1.5 2.6-2.5 4.6-2.3 3.4.3 5.1 3.7 3.3 7.1C19 15.4 12 20 12 20z"/></svg></button>
+        <svg class="shoe" viewBox="0 0 220 140">
+          <path d="M18 108 C 18 100, 26 96, 40 96 L 176 96 C 196 96, 206 100, 206 108 L 206 114 C 206 119, 200 122, 190 122 L 30 122 C 22 122, 18 118, 18 114 Z" fill="#2A2A2A"/>
+          <path d="M30 96 C 30 92, 34 90, 42 90 L 178 90 C 192 90, 200 92, 200 96 L 28 96 Z" fill="#C89B62"/>
+          <path d="M42 90 C 50 52, 96 40, 122 48 C 142 54, 150 70, 148 90 Z" fill="#D8C6A8"/>
+          <path d="M52 84 C 60 58, 96 48, 118 54" stroke="#C4AE8C" stroke-width="3" fill="none"/>
+        </svg>
+      </div>
+      <div class="prod-body">
+        <h3 class="prod-name">BABUTCHA</h3>
+        <div class="prod-material">Natural Leather</div>
+        <div class="price-row"><span class="price-now">1,690 EGP</span></div>
+        <div class="deal-box"><span class="cardic"></span><span class="deal-price">1,437 EGP</span><span class="deal-tag">BEST DEAL</span></div>
+        <div class="pay-note">Pay with card &nbsp;·&nbsp; <b>15% off</b> &nbsp;·&nbsp; <b>Free shipping</b></div>
+        <div class="swatches">
+          <span class="swatch sel" style="background:#151515"></span>
+          <span class="swatch" style="background:#1E2A4A"></span>
+          <span class="swatch" style="background:#8A5A2B"></span>
+          <span class="swatch" style="background:#6B7A3A"></span>
+        </div>
+      </div>
+    </article>
+
+    <!-- CALIDA-HELADO -->
+    <article class="prod-card">
+      <div class="prod-media">
+        <button class="wish-btn" aria-label="Add to wishlist"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.3-8.6C.9 8 2.6 4.6 6 4.3c2-.2 3.6.8 4.6 2.3.4.6 1.4.6 1.8 0 1-1.5 2.6-2.5 4.6-2.3 3.4.3 5.1 3.7 3.3 7.1C19 15.4 12 20 12 20z"/></svg></button>
+        <svg class="shoe" viewBox="0 0 220 140">
+          <path d="M18 108 C 18 100, 26 96, 40 96 L 176 96 C 196 96, 206 100, 206 108 L 206 114 C 206 119, 200 122, 190 122 L 30 122 C 22 122, 18 118, 18 114 Z" fill="#2A2A2A"/>
+          <path d="M30 96 C 30 92, 34 90, 42 90 L 178 90 C 192 90, 200 92, 200 96 L 28 96 Z" fill="#C89B62"/>
+          <path d="M42 90 C 50 50, 100 38, 128 48 C 148 55, 154 72, 152 90 Z" fill="#9A5B2E"/>
+          <path d="M70 60 C 90 46, 120 46, 138 58 C 128 66, 100 70, 84 66 C 76 64, 72 62, 70 60 Z" fill="#F1E7D8"/>
+          <rect x="96" y="52" width="16" height="11" rx="2.5" fill="none" stroke="#5A4630" stroke-width="3"/>
+        </svg>
+      </div>
+      <div class="prod-body">
+        <h3 class="prod-name">CALIDA-HELADO</h3>
+        <div class="prod-material">Natural Leather</div>
+        <div class="price-row"><span class="price-old">2,990 EGP</span><span class="price-now">1,990 EGP</span></div>
+        <div class="deal-box"><span class="cardic"></span><span class="deal-price">1,692 EGP</span><span class="deal-tag">BEST DEAL</span></div>
+        <div class="pay-note">Pay with card &nbsp;·&nbsp; <b>15% off</b> &nbsp;·&nbsp; <b>Free shipping</b></div>
+        <div class="swatches">
+          <span class="swatch sel" style="background:#9A5B2E"></span>
+          <span class="swatch" style="background:#585858"></span>
+          <span class="swatch" style="background:#2A57C4"></span>
+          <span class="swatch" style="background:#DCC9A6"></span>
+        </div>
+      </div>
+    </article>
+
+    <!-- CALIDA-TRENZA -->
+    <article class="prod-card">
+      <div class="prod-media">
+        <button class="wish-btn" aria-label="Add to wishlist"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.3-8.6C.9 8 2.6 4.6 6 4.3c2-.2 3.6.8 4.6 2.3.4.6 1.4.6 1.8 0 1-1.5 2.6-2.5 4.6-2.3 3.4.3 5.1 3.7 3.3 7.1C19 15.4 12 20 12 20z"/></svg></button>
+        <svg class="shoe" viewBox="0 0 220 140">
+          <path d="M18 108 C 18 100, 26 96, 40 96 L 176 96 C 196 96, 206 100, 206 108 L 206 114 C 206 119, 200 122, 190 122 L 30 122 C 22 122, 18 118, 18 114 Z" fill="#2A2A2A"/>
+          <path d="M30 96 C 30 92, 34 90, 42 90 L 178 90 C 192 90, 200 92, 200 96 L 28 96 Z" fill="#C89B62"/>
+          <path d="M42 90 C 50 50, 100 38, 128 48 C 148 55, 154 72, 152 90 Z" fill="#4A5A3A"/>
+          <path d="M60 72 C 70 60, 86 54, 100 54 M68 80 C 80 66, 100 60, 116 60" stroke="#3A4830" stroke-width="4" fill="none" stroke-linecap="round"/>
+          <rect x="98" y="52" width="15" height="11" rx="2.5" fill="none" stroke="#2E3A26" stroke-width="3"/>
+        </svg>
+      </div>
+      <div class="prod-body">
+        <h3 class="prod-name">CALIDA-TRENZA</h3>
+        <div class="prod-material">Natural Leather</div>
+        <div class="price-row"><span class="price-now">1,890 EGP</span></div>
+        <div class="deal-box"><span class="cardic"></span><span class="deal-price">1,607 EGP</span><span class="deal-tag">BEST DEAL</span></div>
+        <div class="pay-note">Pay with card &nbsp;·&nbsp; <b>15% off</b> &nbsp;·&nbsp; <b>Free shipping</b></div>
+        <div class="swatches">
+          <span class="swatch" style="background:#E4D2AE"></span>
+          <span class="swatch" style="background:#151515"></span>
+          <span class="swatch sel" style="background:#4A5A3A"></span>
+          <span class="swatch" style="background:#1E2A4A"></span>
+          <span class="more-sw">+3</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- CALIDA-VERANO BLACK -->
+    <article class="prod-card">
+      <div class="prod-media">
+        <button class="wish-btn" aria-label="Add to wishlist"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.3-8.6C.9 8 2.6 4.6 6 4.3c2-.2 3.6.8 4.6 2.3.4.6 1.4.6 1.8 0 1-1.5 2.6-2.5 4.6-2.3 3.4.3 5.1 3.7 3.3 7.1C19 15.4 12 20 12 20z"/></svg></button>
+        <svg class="shoe" viewBox="0 0 220 140">
+          <path d="M18 108 C 18 100, 26 96, 40 96 L 176 96 C 196 96, 206 100, 206 108 L 206 114 C 206 119, 200 122, 190 122 L 30 122 C 22 122, 18 118, 18 114 Z" fill="#2A2A2A"/>
+          <path d="M30 96 C 30 92, 34 90, 42 90 L 178 90 C 192 90, 200 92, 200 96 L 28 96 Z" fill="#C89B62"/>
+          <path d="M50 90 C 56 66, 74 56, 90 58 C 84 70, 80 80, 78 90 Z" fill="#181818"/>
+          <path d="M104 90 C 112 60, 140 50, 160 58 C 154 70, 150 80, 148 90 Z" fill="#181818"/>
+          <rect x="64" y="62" width="14" height="10" rx="2.5" fill="none" stroke="#4A4A4A" stroke-width="3"/>
+          <rect x="126" y="58" width="14" height="10" rx="2.5" fill="none" stroke="#4A4A4A" stroke-width="3"/>
+        </svg>
+      </div>
+      <div class="prod-body">
+        <h3 class="prod-name">CALIDA-VERANO – BLACK</h3>
+        <div class="prod-material">Natural Leather</div>
+        <div class="price-row"><span class="price-old">2,100 EGP</span><span class="price-now">1,800 EGP</span></div>
+        <div class="deal-box"><span class="cardic"></span><span class="deal-price">1,530 EGP</span><span class="deal-tag">BEST DEAL</span></div>
+        <div class="pay-note">Pay with card &nbsp;·&nbsp; <b>15% off</b> &nbsp;·&nbsp; <b>Free shipping</b></div>
+        <div class="sizes">
+          <span class="size">36</span><span class="size">37</span><span class="size sel">38</span><span class="size sel">39</span><span class="more-sw">+3</span>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div class="dots"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
+</section>
+
+<!-- ===== POPULAR FOR HER ===== -->
+<section class="container section">
+  <div class="split-heading">
+    <span class="word">Popular</span>
+    <span class="rule"></span>
+    <span class="word">For Her</span>
+  </div>
+
+  <div class="her-grid">
+
+    <article class="prod-card">
+      <div class="prod-media">
+        <span class="save-badge">SAVE -22%</span>
+        <button class="wish-btn" aria-label="Add to wishlist"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.3-8.6C.9 8 2.6 4.6 6 4.3c2-.2 3.6.8 4.6 2.3.4.6 1.4.6 1.8 0 1-1.5 2.6-2.5 4.6-2.3 3.4.3 5.1 3.7 3.3 7.1C19 15.4 12 20 12 20z"/></svg></button>
+        <svg class="shoe" viewBox="0 0 220 140">
+          <path d="M18 108 C 18 100, 26 96, 40 96 L 176 96 C 196 96, 206 100, 206 108 L 206 114 C 206 119, 200 122, 190 122 L 30 122 C 22 122, 18 118, 18 114 Z" fill="#2A2A2A"/>
+          <path d="M30 96 C 30 92, 34 90, 42 90 L 178 90 C 192 90, 200 92, 200 96 L 28 96 Z" fill="#C89B62"/>
+          <path d="M42 90 C 50 50, 100 38, 128 48 C 148 55, 154 72, 152 90 Z" fill="#B57A33"/>
+          <rect x="96" y="52" width="16" height="11" rx="2.5" fill="none" stroke="#6B4A22" stroke-width="3"/>
+        </svg>
+      </div>
+      <div class="prod-body">
+        <h3 class="prod-name">CALIDA-ANTE-ESPUMA</h3>
+        <div class="prod-material">Natural Leather</div>
+        <div class="price-row"><span class="price-old">2,800 EGP</span><span class="price-now">2,190 EGP</span></div>
+        <div class="deal-box"><span class="cardic"></span><span class="deal-price">1,862 EGP</span><span class="deal-tag">BEST DEAL</span></div>
+        <div class="pay-note">Pay with card &nbsp;·&nbsp; <b>15% off</b> &nbsp;·&nbsp; <b>Free shipping</b></div>
+      </div>
+    </article>
+
+    <article class="prod-card">
+      <div class="prod-media">
+        <button class="wish-btn" aria-label="Add to wishlist"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.3-8.6C.9 8 2.6 4.6 6 4.3c2-.2 3.6.8 4.6 2.3.4.6 1.4.6 1.8 0 1-1.5 2.6-2.5 4.6-2.3 3.4.3 5.1 3.7 3.3 7.1C19 15.4 12 20 12 20z"/></svg></button>
+        <svg class="shoe" viewBox="0 0 220 140">
+          <path d="M18 108 C 18 100, 26 96, 40 96 L 176 96 C 196 96, 206 100, 206 108 L 206 114 C 206 119, 200 122, 190 122 L 30 122 C 22 122, 18 118, 18 114 Z" fill="#2A2A2A"/>
+          <path d="M30 96 C 30 92, 34 90, 42 90 L 178 90 C 192 90, 200 92, 200 96 L 28 96 Z" fill="#C89B62"/>
+          <path d="M42 90 C 50 50, 100 38, 128 48 C 148 55, 154 72, 152 90 Z" fill="#4A5A3A"/>
+          <rect x="98" y="52" width="15" height="11" rx="2.5" fill="none" stroke="#2E3A26" stroke-width="3"/>
+        </svg>
+      </div>
+      <div class="prod-body">
+        <h3 class="prod-name">CALIDA-TRENZA</h3>
+        <div class="prod-material">Natural Leather</div>
+        <div class="price-row"><span class="price-now">1,890 EGP</span></div>
+        <div class="deal-box"><span class="cardic"></span><span class="deal-price">1,607 EGP</span><span class="deal-tag">BEST DEAL</span></div>
+        <div class="pay-note">Pay with card &nbsp;·&nbsp; <b>15% off</b> &nbsp;·&nbsp; <b>Free shipping</b></div>
+      </div>
+    </article>
+
+    <article class="prod-card">
+      <div class="prod-media">
+        <span class="save-badge">SAVE -21%</span>
+        <button class="wish-btn" aria-label="Add to wishlist"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.3-8.6C.9 8 2.6 4.6 6 4.3c2-.2 3.6.8 4.6 2.3.4.6 1.4.6 1.8 0 1-1.5 2.6-2.5 4.6-2.3 3.4.3 5.1 3.7 3.3 7.1C19 15.4 12 20 12 20z"/></svg></button>
+        <svg class="shoe" viewBox="0 0 220 140">
+          <path d="M18 108 C 18 100, 26 96, 40 96 L 176 96 C 196 96, 206 100, 206 108 L 206 114 C 206 119, 200 122, 190 122 L 30 122 C 22 122, 18 118, 18 114 Z" fill="#2A2A2A"/>
+          <path d="M30 96 C 30 92, 34 90, 42 90 L 178 90 C 192 90, 200 92, 200 96 L 28 96 Z" fill="#C89B62"/>
+          <path d="M60 90 C 70 62, 96 56, 110 60 C 100 70, 94 80, 92 90 Z" fill="#C7A98A"/>
+          <path d="M120 90 C 132 64, 158 56, 172 62 C 164 72, 158 82, 156 90 Z" fill="#C7A98A"/>
+          <rect x="84" y="62" width="13" height="10" rx="2.5" fill="none" stroke="#8A6B4A" stroke-width="3"/>
+        </svg>
+      </div>
+      <div class="prod-body">
+        <h3 class="prod-name">CALIENTE</h3>
+        <div class="prod-material">Natural Leather</div>
+        <div class="price-row"><span class="price-old">2,000 EGP</span><span class="price-now">1,590 EGP</span></div>
+        <div class="deal-box"><span class="cardic"></span><span class="deal-price">1,352 EGP</span><span class="deal-tag">BEST DEAL</span></div>
+        <div class="pay-note">Pay with card &nbsp;·&nbsp; <b>15% off</b> &nbsp;·&nbsp; <b>Free shipping</b></div>
+      </div>
+    </article>
+
+    <article class="prod-card">
+      <div class="prod-media">
+        <span class="save-badge">SAVE -10%</span>
+        <button class="wish-btn" aria-label="Add to wishlist"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.6-9.3-8.6C.9 8 2.6 4.6 6 4.3c2-.2 3.6.8 4.6 2.3.4.6 1.4.6 1.8 0 1-1.5 2.6-2.5 4.6-2.3 3.4.3 5.1 3.7 3.3 7.1C19 15.4 12 20 12 20z"/></svg></button>
+        <svg class="shoe" viewBox="0 0 220 140">
+          <path d="M22 100 C 22 88, 40 82, 70 82 L 160 82 C 190 82, 200 88, 200 98 C 200 108, 188 112, 160 112 L 62 112 C 36 112, 22 108, 22 100 Z" fill="#5E86D4"/>
+          <path d="M70 82 C 80 60, 120 56, 142 64 C 134 72, 128 78, 126 84 Z" fill="#4A72C2"/>
+          <rect x="100" y="62" width="15" height="11" rx="2.5" fill="none" stroke="#2E4E92" stroke-width="3"/>
+        </svg>
+      </div>
+      <div class="prod-body">
+        <h3 class="prod-name">EVA-DAMA-ULTRA –</h3>
+        <div class="prod-material">100% EVA</div>
+        <div class="price-row"><span class="price-old">500 EGP</span><span class="price-now">450 EGP</span></div>
+        <div class="deal-box"><span class="cardic"></span><span class="deal-price">383 EGP</span><span class="deal-tag">BEST DEAL</span></div>
+        <div class="pay-note">Pay with card &nbsp;·&nbsp; <b>15% off</b> &nbsp;·&nbsp; <b>Free shipping</b></div>
+        <div class="sizes">
+          <span class="size">36</span><span class="size">37</span><span class="size sel">38</span><span class="size sel">39</span><span class="more-sw">+2</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- tall lifestyle image -->
+    <div class="her-photo"></div>
+  </div>
+</section>
+
+<!-- ===== #MAKEMOVES ===== -->
+<section class="container makemoves">
+  <div class="mm-head">
+    <h2 class="mm-title">#MakeMoves</h2>
+    <div class="mm-tag">Tag us on social <b>@zee_officialeg</b> to share your story!</div>
+  </div>
+  <div class="mm-grid">
+    <div class="mm-tile mm-1"></div>
+    <div class="mm-tile mm-2"></div>
+    <div class="mm-tile mm-3"></div>
+    <div class="mm-tile mm-4"></div>
+    <div class="mm-tile mm-5"></div>
+    <div class="mm-tile mm-6"></div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container footer-grid">
+    <div>
+      <h4>About Zee</h4>
+      <p>Footwear built around the way our feet connect us to the world — every step grounded in comfort, ease, character, flexibility and the freedom to express what's possible in our lives.</p>
+      <div class="social-title">Social Links:</div>
+      <div class="social-row">
+        <a class="social-btn" href="#" aria-label="Facebook">
+          <svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3c-2.8 0-5 2.2-5 5v3H6v4h3v8h4v-8h3l1-4h-4V9c0-.6.4-1 1-1z"/></svg>
+        </a>
+        <a class="social-btn" href="#" aria-label="Instagram">
+          <svg viewBox="0 0 24 24"><path d="M12 2.5c-2.6 0-2.9 0-3.9.06-1 .05-1.7.21-2.3.45a4.6 4.6 0 0 0-1.7 1.1 4.6 4.6 0 0 0-1.1 1.7c-.24.6-.4 1.3-.45 2.3C2.5 9.1 2.5 9.4 2.5 12s0 2.9.06 3.9c.05 1 .21 1.7.45 2.3.25.64.58 1.18 1.1 1.7.52.52 1.06.85 1.7 1.1.6.24 1.3.4 2.3.45 1 .06 1.3.06 3.9.06s2.9 0 3.9-.06c1-.05 1.7-.21 2.3-.45a4.6 4.6 0 0 0 1.7-1.1 4.6 4.6 0 0 0 1.1-1.7c.24-.6.4-1.3.45-2.3.06-1 .06-1.3.06-3.9s0-2.9-.06-3.9c-.05-1-.21-1.7-.45-2.3a4.6 4.6 0 0 0-1.1-1.7 4.6 4.6 0 0 0-1.7-1.1c-.6-.24-1.3-.4-2.3-.45-1-.06-1.3-.06-3.9-.06zm0 1.7c2.5 0 2.8 0 3.8.06.92.04 1.42.2 1.75.32.44.17.75.38 1.08.7.33.33.54.64.7 1.08.13.33.28.83.32 1.75.06 1 .06 1.3.06 3.8s0 2.8-.06 3.8c-.04.92-.2 1.42-.32 1.75-.17.44-.38.75-.7 1.08a2.9 2.9 0 0 1-1.08.7c-.33.13-.83.28-1.75.32-1 .06-1.3.06-3.8.06s-2.8 0-3.8-.06c-.92-.04-1.42-.2-1.75-.32a2.9 2.9 0 0 1-1.08-.7 2.9 2.9 0 0 1-.7-1.08c-.13-.33-.28-.83-.32-1.75-.06-1-.06-1.3-.06-3.8s0-2.8.06-3.8c.04-.92.2-1.42.32-1.75.17-.44.38-.75.7-1.08.33-.33.64-.54 1.08-.7.33-.13.83-.28 1.75-.32 1-.06 1.3-.06 3.8-.06zm0 2.9a4.9 4.9 0 1 0 0 9.8 4.9 4.9 0 0 0 0-9.8zm0 8.1a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4zm6.2-8.3a1.14 1.14 0 1 1-2.3 0 1.14 1.14 0 0 1 2.3 0z"/></svg>
+        </a>
+        <a class="social-btn" href="#" aria-label="TikTok">
+          <svg viewBox="0 0 24 24"><path d="M16.6 3c.3 1.7 1.4 3.1 3.4 3.4v3.1c-1.3 0-2.5-.4-3.4-1v6.6c0 3.4-2.5 5.9-5.8 5.9A5.6 5.6 0 0 1 5 15.4c0-3.2 2.6-5.7 6-5.5v3.2c-1.6-.3-3 .8-3 2.3 0 1.4 1.1 2.5 2.6 2.5 1.6 0 2.8-1.2 2.8-3V3h3.2z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div>
+      <h4>Categories</h4>
+      <ul>
+        <li><a href="#">Men</a></li>
+        <li><a href="#">Women</a></li>
+        <li><a href="#">Kids</a></li>
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Sales</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Useful Links</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Orders</a></li>
+        <li><a href="#">My Account</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Policies</h4>
+      <ul>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Shipping Policy</a></li>
+        <li><a href="#">Return &amp; Exchange</a></li>
+      </ul>
+      <p class="news-note">Join the Zee list for early access to new drops &amp; exclusive offers.</p>
+      <div class="newsletter">
+        <input type="email" placeholder="Your email address">
+        <button>Sign Up</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <div class="copyright">© 2026 <b>ZEE</b><span class="dot"></span>Crafted by <b>Zenith Weave</b></div>
+    <div class="oval-logo">
+      <span class="ar">زي</span>
+      <span class="en">zee</span>
+    </div>
+    <div class="pay-row">
+      <span class="pay-badge pay-mc" aria-label="Mastercard">
+        <svg viewBox="0 0 52 34"><circle cx="20" cy="17" r="12" fill="#EB001B"/><circle cx="32" cy="17" r="12" fill="#F79E1B" opacity=".9"/></svg>
+      </span>
+      <span class="pay-badge pay-visa">VISA</span>
+      <span class="pay-badge pay-cod">Cash on<br>Delivery</span>
+      <span class="pay-badge pay-sympl">sympl.</span>
+      <span class="pay-badge pay-apay"> Pay</span>
+      <span class="pay-badge pay-valu">valU</span>
+    </div>
+  </div>
+</footer>
+
+<a class="to-top" href="#" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M6 14l6-6 6 6"/></svg>
+</a>
+
+<script>
+// duplicate marquee content for a seamless loop
+const track = document.getElementById('promoTrack');
+track.innerHTML += track.innerHTML;
+// simple swatch/size selection
+document.querySelectorAll('.swatches').forEach(g=>{
+  g.querySelectorAll('.swatch').forEach(s=>s.addEventListener('click',()=>{
+    g.querySelectorAll('.swatch').forEach(x=>x.classList.remove('sel'));s.classList.add('sel');
+  }));
+});
+document.querySelectorAll('.sizes').forEach(g=>{
+  g.querySelectorAll('.size').forEach(s=>s.addEventListener('click',()=>s.classList.toggle('sel')));
+});
+</script>
+</body>
+</html>

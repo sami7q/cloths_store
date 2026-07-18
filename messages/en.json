@@ -1,0 +1,15 @@
+{
+  "common": {
+    "searchPlaceholder": "What are you looking for?",
+    "search": "Search",
+    "account": "Account",
+    "wishlist": "Wishlist",
+    "cart": "Cart",
+    "addToCart": "Add to cart",
+    "addToWishlist": "Add to wishlist",
+    "bestDeal": "BEST DEAL",
+    "signUp": "Sign Up",
+    "backToTop": "Back to top",
+    "close": "Close"
+  }
+}

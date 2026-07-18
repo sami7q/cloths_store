@@ -1,26 +1,62 @@
 @import "tailwindcss";
 
+/* ---- Theme tokens (source of truth: zee-clone.html §3) ---- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --navy: #16294e; /* primary — buttons, nav pills, accents */
+  --navy-deep: #0f1e3c; /* badges, side tab */
+  --ink: #1a1a1a; /* text */
+  --gray-6: #6b7280;
+  --gray-4: #9ca3af;
+  --line: #e5e7eb;
+  --card-bg: #f7f7f5; /* product image background */
+  --deal-red: #8b1f2f; /* card-price box + BEST DEAL */
+  --deal-bg: #fbf3f4;
+  --save-green: #3e5233; /* SAVE -% pill */
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-navy: var(--navy);
+  --color-navy-deep: var(--navy-deep);
+  --color-ink: var(--ink);
+  --color-gray-6: var(--gray-6);
+  --color-gray-4: var(--gray-4);
+  --color-line: var(--line);
+  --color-card: var(--card-bg);
+  --color-deal-red: var(--deal-red);
+  --color-deal-bg: var(--deal-bg);
+  --color-save-green: var(--save-green);
+
+  --font-body: var(--font-archivo), sans-serif;
+  --font-heading: var(--font-oswald), sans-serif;
+  --font-arabic: var(--font-cairo), sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@theme {
+  --animate-marquee: marquee 28s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
   }
 }
 
+/* Reference .container: max 1440px, 24px gutters */
+@utility container-store {
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: #fff;
 }

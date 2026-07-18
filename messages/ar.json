@@ -1,0 +1,15 @@
+{
+  "common": {
+    "searchPlaceholder": "عمّ تبحث؟",
+    "search": "بحث",
+    "account": "الحساب",
+    "wishlist": "المفضلة",
+    "cart": "السلة",
+    "addToCart": "أضف إلى السلة",
+    "addToWishlist": "أضف إلى المفضلة",
+    "bestDeal": "أفضل سعر",
+    "signUp": "اشترك",
+    "backToTop": "العودة للأعلى",
+    "close": "إغلاق"
+  }
+}
