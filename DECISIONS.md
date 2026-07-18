@@ -79,6 +79,35 @@ platform generic and admin-configurable.
   deprecation notice about the future `prisma.config.ts` — migrate alongside
   the Prisma 7 upgrade).
 
+## Phase 2 — Auth & RBAC
+
+- **NextAuth v5 (beta) with JWT sessions, split config.** `auth.config.ts` is
+  edge-safe (imported by middleware, no Prisma/bcrypt); `auth.ts` adds the
+  Credentials + Google providers and DB-touching callbacks. JWT strategy keeps
+  middleware DB-free (role travels in the token).
+- **Google OAuth is env-gated.** The provider and its login button only appear
+  when `GOOGLE_ID`/`GOOGLE_SECRET` are set; OAuth sign-ins upsert a `User` row
+  (role CUSTOMER) so relations (orders/wishlist/reviews) work identically.
+- **Permissions matrix is static code for now** (`src/lib/permissions.ts`):
+  view/edit per module for STAFF/MANAGER/ADMIN. STAFF has no
+  discounts/shipping/payments/reports and no staff/settings; MANAGER has
+  everything except staff & settings (ADMIN-only). Phase 6's Staff & Roles UI
+  may move it to the DB — same shape.
+- **Enforcement is two-layer:** middleware redirects (login / home /
+  `/admin/forbidden`) + `requireAdminModule()` server-side guard called by
+  every admin page (and later, every server action). Never middleware alone.
+- **Password reset is a stub** — the form exists and always returns the same
+  "reset link will be sent" message (no account enumeration); actual email
+  send + token model land with the SMTP layer (Phase 4/5).
+- **Rate limiting is in-memory** (`src/lib/rate-limit.ts`, sliding window,
+  per-instance). Swap for Redis/Upstash when scaling out.
+- **Interim i18n accessor** (`src/lib/i18n.ts`) reads `messages/en.json` so
+  auth/admin strings stay out of components; Phase 3 replaces it with the
+  locale-aware layer.
+- **Admin module pages are guarded placeholders** rendering the role's
+  view/edit badges — they exist so RBAC is verifiable now; Phase 6 replaces
+  them module by module.
+
 ## ⚠ Pending tasks — before the final deployment phase
 
 - **Switch the datasource back to PostgreSQL:** set

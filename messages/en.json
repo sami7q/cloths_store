@@ -11,5 +11,53 @@
     "signUp": "Sign Up",
     "backToTop": "Back to top",
     "close": "Close"
+  },
+  "auth": {
+    "loginTitle": "Sign in",
+    "loginSubtitle": "Welcome back — sign in to your account.",
+    "registerTitle": "Create account",
+    "registerSubtitle": "Join us in under a minute.",
+    "forgotTitle": "Reset password",
+    "forgotSubtitle": "Enter your email and we'll send you a reset link.",
+    "name": "Full name",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password",
+    "login": "Sign in",
+    "register": "Create account",
+    "sendResetLink": "Send reset link",
+    "continueWithGoogle": "Continue with Google",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "signOut": "Sign out",
+    "invalidCredentials": "Invalid email or password.",
+    "invalidInput": "Please check your details and try again.",
+    "emailTaken": "An account with this email already exists.",
+    "passwordMismatch": "Passwords do not match.",
+    "passwordTooShort": "Password must be at least 8 characters.",
+    "tooManyAttempts": "Too many attempts. Please try again in a minute.",
+    "resetSent": "If an account exists for this email, a reset link will be sent."
+  },
+  "account": {
+    "title": "My account",
+    "greeting": "Hello",
+    "role": "Role",
+    "email": "Email",
+    "overviewNote": "Orders, addresses and profile management arrive in Phase 5."
+  },
+  "admin": {
+    "title": "Admin",
+    "dashboard": "Dashboard",
+    "yourRole": "Your role",
+    "moduleAccess": "Module access for your role",
+    "moduleView": "view",
+    "moduleEdit": "edit",
+    "noAccess": "no access",
+    "forbiddenTitle": "Access denied",
+    "forbiddenBody": "Your role does not have permission for this module.",
+    "backToDashboard": "Back to dashboard",
+    "placeholderNote": "Full module UI arrives in Phase 6. This page exists to verify role access.",
+    "storefront": "View storefront"
   }
 }
