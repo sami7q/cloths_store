@@ -239,6 +239,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 </div>
                 {r.title ? <p className="mt-2 font-bold">{r.title}</p> : null}
                 {r.body ? <p className="mt-1 text-[15px] leading-relaxed text-gray-6">{r.body}</p> : null}
+                {r.adminReply ? (
+                  <p className="mt-3 rounded-lg bg-card px-4 py-2.5 text-[14px] leading-relaxed text-gray-6">
+                    <span className="font-bold text-navy">{messages.reviews.storeReply}: </span>
+                    {r.adminReply}
+                  </p>
+                ) : null}
               </li>
             ))}
           </ul>

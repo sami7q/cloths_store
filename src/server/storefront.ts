@@ -14,9 +14,17 @@ export const getStoreSettings = cache(async () => {
 });
 
 export const getBanners = cache(async (placement: BannerPlacement) => {
-  return db.banner.findMany({
+  const banners = await db.banner.findMany({
     where: { placement, isActive: true },
     orderBy: { sortOrder: "asc" },
+  });
+  // Optional schedule window lives in config (§6.10 hero scheduling).
+  const now = Date.now();
+  return banners.filter((b) => {
+    const config = (b.config ?? {}) as { startsAt?: string; endsAt?: string };
+    if (config.startsAt && now < new Date(config.startsAt).getTime()) return false;
+    if (config.endsAt && now > new Date(`${config.endsAt}T23:59:59`).getTime()) return false;
+    return true;
   });
 });
 

@@ -36,6 +36,8 @@ model StoreSettings {
   hotline         String?
   socialLinks     Json?
   seoDefaults     Json?
+  navLinks        Json? // [{label,labelAr,href}] — header secondary links (§6.10 nav editor)
+  footerLinks     Json? // [{label,labelAr,href}] — footer "useful links" column (§6.10)
   maintenanceMode Boolean  @default(false)
   codEnabled      Boolean  @default(true)
   codFee          Decimal  @default(0)

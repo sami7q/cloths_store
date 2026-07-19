@@ -310,6 +310,50 @@ platform generic and admin-configurable.
   **Test residue in dev.db** (reseed clears): Ali's adminNotes, ARENA LUX
   Black/45 stock 12, extra audit rows.
 
+## Phase 6 — Admin (modules 9–12: Reviews, Content/CMS, Shipping, Payments)
+
+- **Reviews:** approve/reject + reply from a card-style moderation queue with
+  status tabs and rating/product filters; every action revalidates the PDP.
+  Admin replies now render on the PDP under the review ("Store reply") —
+  small storefront addition since Phase 5 didn't display `adminReply`.
+- **Banner scheduling:** §6.10 hero "schedule" has no schema columns —
+  stored as `config.startsAt/endsAt` (dates) and filtered in
+  `getBanners()`, so all placements support scheduling. Banner edits
+  **merge** into `config` so unmanaged keys (seed gradient `style` hints)
+  survive; a merchant image upload still wins over the gradient.
+- **Nav & footer editors:** added `StoreSettings.navLinks` /
+  `footerLinks` Json columns (migration `add_settings_nav_footer_links`)
+  holding `[{label,labelAr,href}]`. Header secondary links and the footer
+  "useful links" column read them, falling back to the previous defaults
+  when empty. Dropdown-column nav editing was skipped — the main nav is
+  category-driven (managed in Categories) and the reference design has a
+  flat nav; logged as the generic-first interpretation of §6.10.
+- **Static pages "rich text":** an HTML source editor with a side-by-side
+  bilingual preview (seed content is already HTML). A WYSIWYG would add a
+  heavy dependency for little gain at this stage; `<script>`/event-handler
+  markup is rejected server-side. Can be upgraded to TipTap later without
+  data changes.
+- **Shipping:** zones CRUD with comma-list cities/countries (empty cities =
+  catch-all zone, matching the checkout's zone-matching fallback); the last
+  remaining zone cannot be deleted from the UI. COD settings live on
+  StoreSettings and are editable from both Shipping (§6.11) and Payments
+  (§6.12) through one action whose permission gate depends on the module it
+  was invoked from (shipping = MANAGER+, payments = ADMIN).
+- **Payments:** Stripe status is read-only from env with masked keys (first
+  8 + last 4 chars) — never stored in the DB. The card-discount % edits the
+  CARD_EXTRA_PERCENT PromoRule directly (0 deactivates it); products with
+  `cardPrice` set to auto keep their stored value until re-saved — the %
+  drives the engine and percentage displays immediately.
+- **Verified live (2026-07-19):** Sara's BABUTCHA review approved + replied
+  ("Thank you Sara!…") and both now render on the public PDP; marquee item
+  create→live-on-homepage→delete; hero "Comfort With Personality" hidden by
+  a past end-date and restored by clearing it; page `faq-test`
+  create→renders→delete (404); nav link "Size Guide" appears in the header
+  and defaults return when the list is emptied; Greater Cairo rate 60→65→60
+  round-trip; card % 15→20 (PDP "Pay with card · 20% off" updates while the
+  static marquee banner text correctly stays put) →15. **Test residue:**
+  Sara's review APPROVED with a reply, audit rows (reseed clears).
+
 ## ⚠ Pending tasks — before the final deployment phase
 
 - **Switch the datasource back to PostgreSQL:** set

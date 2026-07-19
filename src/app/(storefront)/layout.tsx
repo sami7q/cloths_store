@@ -58,6 +58,10 @@ export default async function StorefrontLayout({ children }: { children: React.R
     select: { slug: true, title: true },
   });
 
+  type CmsLink = { label?: string; href?: string };
+  const navLinks = ((settings?.navLinks ?? []) as CmsLink[]).filter((l) => l.label && l.href);
+  const footerLinks = ((settings?.footerLinks ?? []) as CmsLink[]).filter((l) => l.label && l.href);
+
   const socials = [
     socialLinks.facebook && { label: "Facebook", href: socialLinks.facebook, icon: <FacebookIcon /> },
     socialLinks.instagram && { label: "Instagram", href: socialLinks.instagram, icon: <InstagramIcon /> },
@@ -92,10 +96,14 @@ export default async function StorefrontLayout({ children }: { children: React.R
           { label: t.store.home, href: "/", active: true },
           ...categories.map((c) => ({ label: c.name, href: `/category/${c.slug}` })),
         ]}
-        secondaryLinks={[
-          { label: t.store.aboutUs, href: "/pages/about-us" },
-          { label: t.store.contact, href: "/pages/about-us" },
-        ]}
+        secondaryLinks={
+          navLinks.length
+            ? navLinks.map((l) => ({ label: l.label as string, href: l.href as string }))
+            : [
+                { label: t.store.aboutUs, href: "/pages/about-us" },
+                { label: t.store.contact, href: "/pages/about-us" },
+              ]
+        }
         wishlistHref="/wishlist"
         wishlistLabel={t.common.wishlist}
         cartLabel={t.common.cart}
@@ -116,12 +124,14 @@ export default async function StorefrontLayout({ children }: { children: React.R
           },
           {
             heading: t.store.usefulLinks,
-            links: [
-              { label: t.store.home, href: "/" },
-              { label: t.common.account, href: "/account" },
-              { label: t.common.wishlist, href: "/wishlist" },
-              { label: t.common.search, href: "/search" },
-            ],
+            links: footerLinks.length
+              ? footerLinks.map((l) => ({ label: l.label as string, href: l.href as string }))
+              : [
+                  { label: t.store.home, href: "/" },
+                  { label: t.common.account, href: "/account" },
+                  { label: t.common.wishlist, href: "/wishlist" },
+                  { label: t.common.search, href: "/search" },
+                ],
           },
           {
             heading: t.store.policies,
