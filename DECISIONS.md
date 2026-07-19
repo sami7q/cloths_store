@@ -267,6 +267,49 @@ platform generic and admin-configurable.
   ORD-1021 now PROCESSING with tracking TRK-889900, product
   `aqua-test-slide`, audit-log rows.
 
+## Phase 6 — Admin (modules 5–8: Collections, Inventory, Discounts, Customers)
+
+- **Collections:** product assignment persists immediately on every add/
+  remove/drag (no separate save button) — the array order becomes
+  `CollectionProduct.sortOrder`, which drives the homepage carousels.
+  Deleting a collection is **blocked while an active BUNDLE_PRICE promo
+  references its slug** — deleting would silently break the promo.
+- **Inventory:** the stock-adjustment trail lives in `AuditLog`
+  (`inventory.adjust` with sku/from/to/reason) — §4 has no dedicated
+  inventory-log model and the audit log already satisfies "logged". A reason
+  (min 3 chars) is mandatory. Adjusting a variant below its threshold raises
+  a LOW_STOCK notification (only on the downward crossing). The low-stock
+  filter compares `stock <= lowStockAt` in JS (column-to-column comparison
+  isn't portable), so low-mode filtering/pagination is in-memory, capped at
+  5000 variants.
+- **Discounts:** coupon usage stats show both `usedCount` (checkout
+  redemptions) and attributed orders/revenue from `Order.couponCode` — seed
+  orders carry codes without incrementing usedCount, so the two can differ.
+  Coupon code is the PK; renames update in place (order snapshots keep the
+  old code string). Promo `config` is schema-validated per type server-side;
+  the builder shows a live plain-language preview sentence (e.g. «Any 3
+  items from “EVA-ULTRA” for 3,999 EGP»). Reordering normalizes all
+  priorities to 0..n-1 (repairs any duplicate priorities from the seed).
+  Editing a rule cannot change its type (delete + recreate instead) — keeps
+  config validation honest.
+- **Customers:** added nullable `User.adminNotes` column (migration
+  `add_user_admin_notes`) — §6.8 requires per-customer staff notes and §4
+  had no home for them; additive and Postgres-compatible. Lifetime value /
+  order counts exclude CANCELLED and RETURNED orders. Disable-account flips
+  `User.isActive`, which the credentials provider already rejects at
+  sign-in. Detail pages are scoped to `role=CUSTOMER` — staff accounts are
+  managed by module 13, not here.
+- **Verified live (2026-07-19):** EVA-ULTRA assignment (add + drag-to-first
+  persisted to sortOrder, removal restored), promo-protected collection
+  delete blocked with message; stock adjust 2→12 on P-1011-BLA-45 with
+  audited reason; TEST20 coupon create/delete round-trip, promo move-up/down
+  (priorities normalized 0-3), all four seed rules render correct preview
+  sentences; Ali Mostafa detail (3 orders incl. manual ORD-1027 in LTV
+  13,943.65), admin note saved, disable→enable round-trip (both audited);
+  customers/inventory CSV exports (low-filter respected, 127 low variants).
+  **Test residue in dev.db** (reseed clears): Ali's adminNotes, ARENA LUX
+  Black/45 stock 12, extra audit rows.
+
 ## ⚠ Pending tasks — before the final deployment phase
 
 - **Switch the datasource back to PostgreSQL:** set

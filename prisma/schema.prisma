@@ -55,6 +55,7 @@ model User {
   role         String   @default("CUSTOMER") // Role: CUSTOMER | STAFF | MANAGER | ADMIN
   avatarUrl    String?
   isActive     Boolean  @default(true)
+  adminNotes   String? // internal staff notes (§6.8) — never exposed to the customer
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
