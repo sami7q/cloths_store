@@ -38,6 +38,7 @@ model StoreSettings {
   seoDefaults     Json?
   navLinks        Json? // [{label,labelAr,href}] — header secondary links (§6.10 nav editor)
   footerLinks     Json? // [{label,labelAr,href}] — footer "useful links" column (§6.10)
+  notificationPrefs Json? // {NEW_ORDER?:bool, LOW_STOCK?:bool, PENDING_REVIEW?:bool} (§6.14) — missing key = on
   maintenanceMode Boolean  @default(false)
   codEnabled      Boolean  @default(true)
   codFee          Decimal  @default(0)

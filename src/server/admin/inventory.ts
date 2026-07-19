@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { requireAdminAction } from "@/lib/auth-guards";
 import { audit } from "@/lib/admin/audit";
 import { messages } from "@/lib/i18n";
+import { notify } from "@/lib/notify";
 
 /** Admin Inventory module (§6.6): stock adjustments with a mandatory, logged reason. */
 
@@ -47,14 +48,7 @@ export async function adjustStock(raw: unknown): Promise<AdjustResult> {
 
   // Low-stock notification when the adjustment crosses the threshold downward.
   if (newStock <= variant.lowStockAt && variant.stock > variant.lowStockAt) {
-    await db.notification.create({
-      data: {
-        type: "LOW_STOCK",
-        title: "Low stock",
-        body: `${variant.sku} is at ${newStock}`,
-        link: "/admin/inventory?low=1",
-      },
-    });
+    await notify("LOW_STOCK", "Low stock", `${variant.sku} is at ${newStock}`, "/admin/inventory?low=1");
   }
 
   revalidatePath("/admin/inventory");

@@ -82,6 +82,80 @@ export async function sendOrderConfirmation(params: {
   }
 }
 
+/** True when SMTP env vars are present (Settings module status display). */
+export function smtpConfigured(): boolean {
+  return Boolean(process.env.SMTP_HOST);
+}
+
+/** Plain SMTP round-trip test for the Settings module (§6.16). */
+export async function sendTestEmail(to: string): Promise<boolean> {
+  const tx = transport();
+  if (!tx) {
+    console.log(`[mail] SMTP not configured — cannot send test email to ${to}`);
+    return false;
+  }
+  try {
+    const settings = await db.storeSettings.findUnique({ where: { id: 1 } });
+    await tx.sendMail({
+      from: process.env.SMTP_FROM ?? `no-reply@localhost`,
+      to,
+      subject: `SMTP test — ${settings?.name ?? "Store"}`,
+      text: "SMTP is configured correctly.",
+    });
+    return true;
+  } catch (e) {
+    console.error("[mail] test email failed:", e);
+    return false;
+  }
+}
+
+/** Staff-invite email carrying the one-time temporary password (§6.13). */
+export async function sendStaffInvite(params: {
+  to: string;
+  name: string;
+  tempPassword: string;
+}): Promise<boolean> {
+  try {
+    const settings = await db.storeSettings.findUnique({ where: { id: 1 } });
+    const storeName = settings?.name ?? "Store";
+    const t = messages.email;
+
+    const html = await render(
+      OrderStatusEmail({
+        storeName,
+        orderNumber: storeName,
+        name: params.name,
+        statusLabel: params.tempPassword,
+        trackingNumber: null,
+        note: null,
+        strings: {
+          preview: t.staffInviteSubject,
+          greeting: t.greeting,
+          statusNow: t.staffInviteIntro,
+          trackingLabel: "",
+          footer: storeName,
+        },
+      }),
+    );
+
+    const tx = transport();
+    if (!tx) {
+      console.log(`[mail] SMTP not configured — skipping staff invite → ${params.to}`);
+      return false;
+    }
+    await tx.sendMail({
+      from: process.env.SMTP_FROM ?? `no-reply@localhost`,
+      to: params.to,
+      subject: `${t.staffInviteSubject} — ${storeName}`,
+      html,
+    });
+    return true;
+  } catch (e) {
+    console.error("[mail] staff invite failed:", e);
+    return false;
+  }
+}
+
 export async function sendOrderStatusUpdate(params: {
   to: string;
   orderNumber: string;

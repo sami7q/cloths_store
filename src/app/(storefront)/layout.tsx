@@ -47,6 +47,25 @@ export default async function StorefrontLayout({ children }: { children: React.R
     auth(),
   ]);
 
+  // Maintenance mode (§6.16): visitors get a notice; staff keep full access.
+  const role = session?.user?.role;
+  const isStaff = role === "STAFF" || role === "MANAGER" || role === "ADMIN";
+  if (settings?.maintenanceMode && !isStaff) {
+    return (
+      <main className="grid min-h-screen place-items-center bg-card px-6">
+        <div className="max-w-md text-center">
+          <p className="font-heading text-4xl font-bold uppercase tracking-[1.5px] text-navy">
+            {settings.name}
+          </p>
+          <h1 className="mt-6 font-heading text-2xl font-bold uppercase tracking-[1px]">
+            {messages.store.maintenanceTitle}
+          </h1>
+          <p className="mt-3 text-gray-6">{messages.store.maintenanceBody}</p>
+        </div>
+      </main>
+    );
+  }
+
   const t = messages;
   const name = settings?.name ?? "Store";
   const currency = settings?.currency ?? "EGP";

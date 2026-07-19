@@ -5,6 +5,7 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { verifiedUserId } from "@/lib/auth-guards";
 import { messages } from "@/lib/i18n";
+import { notify } from "@/lib/notify";
 
 export type ReviewFormState = { error?: string; success?: string };
 
@@ -43,14 +44,7 @@ export async function submitReview(_prev: ReviewFormState, formData: FormData): 
       status: "PENDING",
     },
   });
-  await db.notification.create({
-    data: {
-      type: "PENDING_REVIEW",
-      title: "Review awaiting moderation",
-      body: `New review for ${product.name}`,
-      link: "/admin/reviews",
-    },
-  });
+  await notify("PENDING_REVIEW", "Review awaiting moderation", `New review for ${product.name}`, "/admin/reviews?tab=PENDING");
   revalidatePath(`/product/${product.slug}`);
   return { success: messages.reviews.pendingNote };
 }

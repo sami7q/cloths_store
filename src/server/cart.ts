@@ -10,6 +10,7 @@ import type { PaymentMethod, PromoType } from "@/lib/enums";
 import { rateLimit } from "@/lib/rate-limit";
 import { headers } from "next/headers";
 import { sendOrderConfirmation } from "@/lib/mail";
+import { notify } from "@/lib/notify";
 import { createStripeCheckout, stripeEnabled } from "@/lib/payments/stripe";
 
 /**
@@ -351,14 +352,12 @@ export async function placeOrder(raw: unknown): Promise<PlaceOrderResult> {
       });
     }
 
-    await db.notification.create({
-      data: {
-        type: "NEW_ORDER",
-        title: "New order received",
-        body: `Order ${order.orderNumber} — ${quote.grandTotal} ${quote.currency}`,
-        link: "/admin/orders",
-      },
-    });
+    await notify(
+      "NEW_ORDER",
+      "New order received",
+      `Order ${order.orderNumber} — ${quote.grandTotal} ${quote.currency}`,
+      `/admin/orders/${order.orderNumber}`,
+    );
 
     let redirectUrl: string | null = null;
     if (input.paymentMethod === "CARD") {

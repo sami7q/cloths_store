@@ -354,6 +354,48 @@ platform generic and admin-configurable.
   static marquee banner text correctly stays put) →15. **Test residue:**
   Sara's review APPROVED with a reply, audit rows (reseed clears).
 
+## Phase 6 — Admin (modules 13–16: Staff, Notifications, Reports, Settings) — PHASE COMPLETE
+
+- **Staff invites** create the account immediately with a generated
+  URL-safe temporary password (bcrypt-hashed): the password is shown ONCE to
+  the inviting admin and also emailed via the invite template when SMTP is
+  configured — invite-link/token flows need infrastructure §4 doesn't model.
+  Guards: you cannot change or deactivate your own account from the staff
+  module, and the last active ADMIN can be neither demoted nor deactivated.
+- **Permissions matrix stays code-defined** (`src/lib/permissions.ts`) and
+  is displayed read-only in the staff module. §6.13 wants the matrix
+  *enforced* (it is — middleware + every action); per-store editable
+  permissions would need a DB model §4 doesn't define. Logged as the
+  generic-first interpretation; the display makes the contract visible.
+- **Notification prefs** live in `StoreSettings.notificationPrefs`
+  (migration `add_notification_prefs`; missing key = ON, explicit false =
+  muted). All three producers route through `src/lib/notify.ts`, which never
+  throws — a muted or failed notification cannot break checkout, review
+  submission, or a stock adjustment.
+- **Reports aggregate in JS** from the range's orders (≤5000) rather than
+  SQL date functions — identical behavior on SQLite dev and Postgres prod.
+  Excludes CANCELLED/RETURNED, same revenue definition as the dashboard.
+  Product report is top-20 by revenue; day/category/payment/coupon exports
+  are unbounded within the range cap.
+- **Settings:** identity (name/logo/favicon/hotline/socials), currency +
+  default locale, SEO defaults, maintenance toggle, SMTP test button
+  (attempts a real send; clear failure message when unset). **Maintenance
+  mode** renders a branded notice to visitors in the storefront layout while
+  STAFF/MANAGER/ADMIN sessions browse normally — the admin area is never
+  gated. **Audit log viewer** is part of the settings page: paginated,
+  searchable (action/entity/id), actor-joined, diff preview.
+- **Verified live (2026-07-19):** invited "Test Staffer" (temp password
+  verified against the bcrypt hash), role STAFF→MANAGER, deactivated — all
+  three audited; notification marked read (7→6 unread) and LOW_STOCK pref
+  off→on round-trip; reports for the last 30d (10 orders / 46,793.3 EGP / 32
+  units, WELCOME10 = 4 orders / 2,355 discount) with the coupon CSV export
+  matching on-screen numbers; store name change reflected on the storefront
+  header and reverted; maintenance ON → guests saw the notice while the
+  admin session browsed normally → OFF; SMTP test correctly reported failure
+  (unset); audit viewer lists the session's full trail. **Test residue:**
+  inactive MANAGER account `test.staffer@store.test`, read notification,
+  audit rows (reseed clears).
+
 ## ⚠ Pending tasks — before the final deployment phase
 
 - **Switch the datasource back to PostgreSQL:** set
