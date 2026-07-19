@@ -1,6 +1,7 @@
 // Prisma schema — full data model per STORE-BUILD-PROMPT.md §4.
 //
-// ⚠ TEMPORARY DEV DATASOURCE: SQLite ("file:./dev.db") for phases P1–P7.
+// ⚠ TEMPORARY DEV DATASOURCE: SQLite for phases P1–P7. DATABASE_URL is
+// "file:./dev.db" in .env (dev) and "file:./test.db" for Playwright E2E runs.
 // Production target is PostgreSQL (Neon). Before the deployment phase:
 //   1. switch provider back to "postgresql" + url = env("DATABASE_URL"),
 //   2. re-run `prisma migrate dev` to regenerate migrations for Postgres,
@@ -18,7 +19,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url      = env("DATABASE_URL")
 }
 
 // ---------------------------------------------------------------------------

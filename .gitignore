@@ -46,3 +46,8 @@ next-env.d.ts
 
 # local sqlite dev database (temporary — Postgres in production)
 /prisma/dev.db*
+/prisma/test.db*
+
+# playwright
+/test-results/
+/playwright-report/

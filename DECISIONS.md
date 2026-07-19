@@ -396,6 +396,35 @@ platform generic and admin-configurable.
   inactive MANAGER account `test.staffer@store.test`, read notification,
   audit rows (reseed clears).
 
+## Phase 7 — Hardening (Step 1: Playwright infrastructure + 3 E2E flows)
+
+- **Datasource URL is env-based now:** `schema.prisma` reads
+  `env("DATABASE_URL")` (`.env` → `file:./dev.db`). Required so the E2E
+  server can point at an isolated DB; also shrinks the final
+  Postgres-switch delta to just the provider line + the env value.
+- **E2E isolation:** `prisma/test.db` (gitignored), reset + reseeded by
+  `e2e/reset-test-db.ts` which the `test:e2e` script runs **before**
+  `playwright test` — Playwright boots the webServer before `globalSetup`,
+  so the DB must be ready before the runner starts. The reset deletes the
+  script-owned throwaway file and runs a plain `prisma db push` into the
+  fresh file instead of `db push --force-reset`: Prisma 6.19 ships an
+  AI-agent guard that blocks the destructive flag when invoked from
+  Claude Code, and the file-delete design needs no destructive flag at
+  all (and behaves identically for humans running `pnpm test:e2e`).
+- **Runner shape:** dev server (turbopack) on dedicated port 3100 so a
+  normal `pnpm dev` on :3000 can coexist; single worker + serial specs
+  (SQLite writes, on-demand route compiles); `retries: 1` with
+  per-attempt-unique product slugs/SKUs so retries never collide.
+- **Selector lessons encoded in the specs:** PDP assertions scope to
+  `[data-pdp-options]` (related-product cards render their own size-chip
+  buttons); checkout's "Next" button needs `exact: true` because the
+  dev-mode Next.js Dev Tools floating button ("Open Next.js Dev Tools")
+  substring-matches "Next".
+- **Latent bug found, deferred to the Step 2–6 batch:**
+  `src/server/auth.ts` post-login fallback uses `redirect("\admin")` — the
+  backslash makes it the relative path `"admin"`, which only resolves to
+  `/admin` by accident of resolving against `/login`. Fix queued.
+
 ## ⚠ Pending tasks — before the final deployment phase
 
 - **Switch the datasource back to PostgreSQL:** set
