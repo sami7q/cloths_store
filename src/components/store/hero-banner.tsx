@@ -1,4 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
+import { SmartImage } from "@/components/ui/smart-image";
 import { cn } from "@/lib/utils";
 
 export type HeroBannerProps = {
@@ -32,17 +33,11 @@ export function HeroBanner({
         "relative flex min-h-[560px] flex-col justify-center overflow-hidden rounded-lg bg-card p-[60px] max-md:min-h-[440px] max-md:p-8",
         className,
       )}
-      style={{
-        ...(imageUrl
-          ? {
-              backgroundImage: `url(${imageUrl})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }
-          : undefined),
-        ...style,
-      }}
+      style={style}
     >
+      {imageUrl ? (
+        <SmartImage src={imageUrl} alt="" fill priority sizes="100vw" className="object-cover" />
+      ) : null}
       {decor}
       <div className="relative z-[2]">
         {title}

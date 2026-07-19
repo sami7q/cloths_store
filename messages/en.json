@@ -756,7 +756,9 @@
     "relatedProducts": "You may also like",
     "sku": "SKU",
     "cartComingSoon": "Checkout arrives in the next phase",
-    "reviewsEmpty": "No reviews yet."
+    "reviewsEmpty": "No reviews yet.",
+    "increaseQty": "Increase quantity",
+    "decreaseQty": "Decrease quantity"
   },
   "cart": {
     "title": "Your cart",
@@ -779,7 +781,9 @@
     "couponInvalid": "Coupon not valid.",
     "couponExpired": "Coupon expired.",
     "couponMin": "Subtotal too low for this coupon.",
-    "couponExhausted": "Coupon usage limit reached."
+    "couponExhausted": "Coupon usage limit reached.",
+    "increaseQty": "Increase quantity",
+    "decreaseQty": "Decrease quantity"
   },
   "checkout": {
     "title": "Checkout",
@@ -865,5 +869,13 @@
     "title": "Page not found",
     "body": "The page you are looking for does not exist.",
     "backHome": "Back to store"
+  },
+  "errorPage": {
+    "title": "Something went wrong",
+    "body": "An unexpected error occurred. Please try again.",
+    "retry": "Try again",
+    "backHome": "Back to store",
+    "backAdmin": "Back to dashboard",
+    "reference": "Reference"
   }
 }

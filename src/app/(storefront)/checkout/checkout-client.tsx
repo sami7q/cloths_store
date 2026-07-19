@@ -6,6 +6,7 @@ import { useCartStore } from "@/lib/cart-store";
 import { placeOrder, quoteCart, type CartQuote, type getCheckoutContext } from "@/server/cart";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { CartLayoutSkeleton } from "@/components/store/skeletons";
 import { cn } from "@/lib/utils";
 
 type Ctx = Awaited<ReturnType<typeof getCheckoutContext>>;
@@ -60,7 +61,7 @@ export function CheckoutClient({ t, tc, ctx }: { t: Strings; tc: CartStrings; ct
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hydrated, itemsKey, couponCode, paymentMethod, address.city]);
 
-  if (!hydrated) return null;
+  if (!hydrated) return <CartLayoutSkeleton />;
 
   if (!items.length && !placing) {
     return (
@@ -130,7 +131,7 @@ export function CheckoutClient({ t, tc, ctx }: { t: Strings; tc: CartStrings; ct
                     ? "border-navy bg-navy text-white"
                     : i < stepIndex
                       ? "border-save-green text-save-green"
-                      : "border-line text-gray-4",
+                      : "border-line text-gray-6",
                 )}
               >
                 {i + 1}. {t[s === "shipping" ? "shippingStep" : s]}
@@ -293,6 +294,7 @@ export function CheckoutClient({ t, tc, ctx }: { t: Strings; tc: CartStrings; ct
             value={couponCode}
             onChange={(e) => setCouponCode(e.target.value)}
             placeholder={tc.couponPlaceholder}
+            aria-label={tc.couponPlaceholder}
             className="h-11 min-w-0 flex-1 rounded-full border border-line px-4 text-sm outline-none focus:border-navy"
           />
         </form>

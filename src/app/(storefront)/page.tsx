@@ -13,6 +13,7 @@ import { CategoryCard } from "@/components/store/category-card";
 import { LifestyleCard } from "@/components/store/lifestyle-card";
 import { ShopProductCard } from "@/components/store/shop-product-card";
 import { SocialGrid } from "@/components/store/social-grid";
+import { SmartImage } from "@/components/ui/smart-image";
 import { buildProductCardProps, buildQuickAddItem } from "@/components/store/product-card-mapper";
 import type { ProductForCard } from "@/server/storefront";
 
@@ -106,10 +107,12 @@ export default async function HomePage() {
                 name={p.name.split(" ")[0]}
                 type={p.material ?? undefined}
                 media={
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <SmartImage
                     src={p.images[0]?.url ?? "/images/placeholder-product.svg"}
                     alt={p.images[0]?.alt ?? p.name}
+                    width={110}
+                    height={74}
+                    sizes="110px"
                     className="h-[74px] w-[110px] object-contain"
                   />
                 }

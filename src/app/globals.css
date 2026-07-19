@@ -55,6 +55,22 @@ html {
   scroll-behavior: smooth;
 }
 
+/* ---- Accessibility (Phase 7): visible keyboard focus + reduced motion ---- */
+:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+/* Dark surfaces (footer) need a light ring to stay visible. */
+footer :focus-visible {
+  outline-color: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 body {
   font-family: var(--font-body);
   color: var(--ink);

@@ -131,6 +131,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           onlyLeft: t.onlyLeft,
           outOfStock: t.outOfStock,
           cartComingSoon: t.cartComingSoon,
+          increaseQty: t.increaseQty,
+          decreaseQty: t.decreaseQty,
         }}
         header={
           <header>
@@ -141,7 +143,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             ) : null}
             <h1 className="text-[34px] font-extrabold leading-tight tracking-[0.2px]">{product.name}</h1>
             {product.material ? (
-              <p className="mt-1.5 text-[17px] font-medium text-gray-4">{product.material}</p>
+              <p className="mt-1.5 text-[17px] font-medium text-gray-6">{product.material}</p>
             ) : null}
             {avgRating != null ? (
               <p className="mt-2 text-sm font-bold text-ink">
@@ -152,7 +154,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
             <div className="mt-5 flex items-baseline gap-3">
               {product.compareAtPrice ? (
-                <span className="text-lg font-semibold text-gray-4 line-through">
+                <span className="text-lg font-semibold text-gray-6 line-through">
                   {formatPrice(product.compareAtPrice, currency)}
                 </span>
               ) : null}
@@ -181,7 +183,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 {promo.freeShippingOver != null ? <> · {messages.store.freeShipping}</> : null}
               </p>
             ) : null}
-            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.5px] text-gray-4">
+            <p className="mt-2 text-xs font-semibold uppercase tracking-[0.5px] text-gray-6">
               {t.sku}: {product.sku}
             </p>
           </header>

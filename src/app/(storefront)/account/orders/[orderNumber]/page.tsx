@@ -6,6 +6,7 @@ import { messages } from "@/lib/i18n";
 import { formatPrice } from "@/lib/format";
 import { getStoreSettings } from "@/server/storefront";
 import { Badge } from "@/components/ui/badge";
+import { SmartImage } from "@/components/ui/smart-image";
 
 export default async function AccountOrderDetailPage({
   params,
@@ -50,8 +51,7 @@ export default async function AccountOrderDetailPage({
                 <li key={item.id} className="flex items-center gap-4 py-3">
                   <span className="flex size-14 shrink-0 items-center justify-center rounded-lg bg-card">
                     {item.imageSnapshot ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={item.imageSnapshot} alt="" className="h-4/5 w-4/5 object-contain" />
+                      <SmartImage src={item.imageSnapshot} alt="" width={56} height={56} sizes="48px" className="h-4/5 w-4/5 object-contain" />
                     ) : null}
                   </span>
                   <span className="min-w-0 flex-1 font-semibold">{item.nameSnapshot}</span>

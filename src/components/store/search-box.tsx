@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SearchIcon } from "./icons";
 import { searchSuggestions, type SearchSuggestion } from "@/server/search";
+import { SmartImage } from "@/components/ui/smart-image";
 
 type Labels = {
   placeholder: string;
@@ -67,6 +68,7 @@ export function SearchBox({ labels }: { labels: Labels }) {
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => results && setOpen(true)}
           placeholder={labels.placeholder}
+          aria-label={labels.searchLabel}
           className="h-14 w-full rounded-[32px] border border-line bg-white pe-16 ps-[26px] text-base text-ink outline-none transition-colors placeholder:text-gray-4 focus:border-navy"
         />
         <button
@@ -93,8 +95,7 @@ export function SearchBox({ labels }: { labels: Labels }) {
                   >
                     <span className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-card">
                       {r.imageUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={r.imageUrl} alt="" className="h-4/5 w-4/5 object-contain" />
+                        <SmartImage src={r.imageUrl} alt="" width={48} height={48} sizes="40px" className="h-4/5 w-4/5 object-contain" />
                       ) : null}
                     </span>
                     <span className="min-w-0 flex-1 truncate font-bold">{r.name}</span>

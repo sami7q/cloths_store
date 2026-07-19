@@ -9,7 +9,7 @@ export function PromoMarquee({ items }: PromoMarqueeProps) {
   const loop = [...items, ...items];
   return (
     <div className="group relative flex h-11 items-center overflow-hidden bg-navy text-white">
-      <div className="flex animate-marquee whitespace-nowrap will-change-transform group-hover:[animation-play-state:paused]">
+      <div className="flex animate-marquee whitespace-nowrap will-change-transform group-hover:[animation-play-state:paused] motion-reduce:animate-none">
         {loop.map((text, i) => (
           <span
             key={i}

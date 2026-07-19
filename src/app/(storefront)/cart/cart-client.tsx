@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useCartStore } from "@/lib/cart-store";
 import { quoteCart, type CartQuote } from "@/server/cart";
 import { Button } from "@/components/ui/button";
+import { CartLayoutSkeleton } from "@/components/store/skeletons";
+import { SmartImage } from "@/components/ui/smart-image";
 
 type Strings = typeof import("../../../../messages/en.json")["cart"];
 
@@ -21,7 +23,6 @@ export function CartClient({ t, currency }: { t: Strings; currency: string }) {
 
   const itemsKey = items.map((i) => `${i.variantId}:${i.quantity}`).join(",");
   const latest = useRef("");
-
   const refresh = useCallback(
     (coupon: string | null) => {
       const key = `${itemsKey}|${coupon ?? ""}`;
@@ -48,7 +49,7 @@ export function CartClient({ t, currency }: { t: Strings; currency: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hydrated, itemsKey, appliedCoupon]);
 
-  if (!hydrated) return null;
+  if (!hydrated) return <CartLayoutSkeleton />;
 
   if (!items.length) {
     return (
@@ -80,8 +81,7 @@ export function CartClient({ t, currency }: { t: Strings; currency: string }) {
           <li key={item.variantId} className="flex gap-5 rounded-[10px] border border-line bg-white p-4">
             <Link href={`/product/${item.slug}`} className="flex size-24 shrink-0 items-center justify-center rounded-lg bg-card">
               {item.imageUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={item.imageUrl} alt={item.name} className="h-4/5 w-4/5 object-contain" />
+                <SmartImage src={item.imageUrl} alt={item.name} width={96} height={96} sizes="80px" className="h-4/5 w-4/5 object-contain" />
               ) : null}
             </Link>
             <div className="flex min-w-0 flex-1 flex-col">
@@ -100,7 +100,7 @@ export function CartClient({ t, currency }: { t: Strings; currency: string }) {
                 <div className="flex items-center rounded-full border border-line">
                   <button
                     type="button"
-                    aria-label="−"
+                    aria-label={t.decreaseQty}
                     onClick={() => setQuantity(item.variantId, item.quantity - 1)}
                     className="flex size-9 items-center justify-center text-lg font-bold text-gray-6 hover:text-ink"
                   >
@@ -109,7 +109,7 @@ export function CartClient({ t, currency }: { t: Strings; currency: string }) {
                   <span className="min-w-7 text-center text-[15px] font-extrabold">{item.quantity}</span>
                   <button
                     type="button"
-                    aria-label="+"
+                    aria-label={t.increaseQty}
                     onClick={() => setQuantity(item.variantId, Math.min(item.quantity + 1, item.maxStock))}
                     className="flex size-9 items-center justify-center text-lg font-bold text-gray-6 hover:text-ink"
                   >
@@ -150,6 +150,7 @@ export function CartClient({ t, currency }: { t: Strings; currency: string }) {
             value={couponCode}
             onChange={(e) => setCouponCode(e.target.value)}
             placeholder={t.couponPlaceholder}
+            aria-label={t.couponPlaceholder}
             className="h-11 min-w-0 flex-1 rounded-full border border-line px-4 text-sm outline-none focus:border-navy"
           />
           <Button type="submit" size="sm" variant="outline" className="h-11">

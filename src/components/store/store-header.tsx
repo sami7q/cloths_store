@@ -53,6 +53,7 @@ export function StoreHeader({
             name="q"
             defaultValue={searchDefaultValue}
             placeholder={searchPlaceholder}
+            aria-label={searchLabel}
             className="h-14 w-full rounded-[32px] border border-line bg-white pe-16 ps-[26px] text-base text-ink outline-none transition-colors placeholder:text-gray-4 focus:border-navy"
           />
           <button

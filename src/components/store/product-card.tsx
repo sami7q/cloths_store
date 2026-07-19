@@ -105,7 +105,7 @@ export function ProductCard({
           <button
             type="button"
             onClick={onAddToCart}
-            className="absolute inset-x-4 bottom-4 z-[2] h-11 translate-y-3 rounded-full bg-navy text-[15px] font-extrabold uppercase tracking-[0.5px] text-white opacity-0 transition-all duration-300 hover:bg-navy-deep group-hover:translate-y-0 group-hover:opacity-100"
+            className="absolute inset-x-4 bottom-4 z-[2] h-11 translate-y-3 rounded-full bg-navy text-[15px] font-extrabold uppercase tracking-[0.5px] text-white opacity-0 transition-all duration-300 hover:bg-navy-deep group-hover:translate-y-0 group-hover:opacity-100 focus-visible:translate-y-0 focus-visible:opacity-100"
           >
             {addToCartLabel}
           </button>
@@ -117,14 +117,14 @@ export function ProductCard({
           <a href={href}>{name}</a>
         </h3>
         {material ? (
-          <div className="mt-1.5 text-[16.5px] font-medium text-gray-4">
+          <div className="mt-1.5 text-[16.5px] font-medium text-gray-6">
             {material}
           </div>
         ) : null}
 
         <div className="mt-[22px] flex items-baseline gap-2.5">
           {oldPrice ? (
-            <span className="text-base font-semibold text-gray-4 line-through">
+            <span className="text-base font-semibold text-gray-6 line-through">
               {oldPrice}
             </span>
           ) : null}

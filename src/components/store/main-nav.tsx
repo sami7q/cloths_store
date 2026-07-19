@@ -41,6 +41,7 @@ export function MainNav({
             <a
               key={`${link.href}-${link.label}`}
               href={link.href}
+              aria-current={link.active ? "page" : undefined}
               className={cn(
                 "relative flex items-center gap-1.5 whitespace-nowrap rounded-md px-3.5 py-2.5 text-[15.5px] font-bold uppercase tracking-[0.4px] text-ink transition-colors hover:bg-[#F3F4F6]",
                 link.active &&

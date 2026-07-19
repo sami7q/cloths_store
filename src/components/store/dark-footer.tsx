@@ -96,6 +96,7 @@ export function DarkFooter({
                     <input
                       type="email"
                       placeholder={newsletterPlaceholder}
+                      aria-label={newsletterPlaceholder}
                       className="h-14 min-w-0 flex-1 rounded-[30px] border-none bg-white px-[26px] text-base text-ink outline-none placeholder:text-gray-4"
                     />
                     <button

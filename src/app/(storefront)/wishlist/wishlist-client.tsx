@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { getWishlistCards, type WishlistCard } from "@/server/wishlist";
 import { ShopProductCard } from "@/components/store/shop-product-card";
+import { ProductGridSkeleton } from "@/components/store/skeletons";
+import { SmartImage } from "@/components/ui/smart-image";
 import { messages } from "@/lib/i18n";
 
 /**
@@ -30,7 +32,7 @@ export function WishlistClient() {
   }, [hydrated, idsKey]);
 
   const t = messages;
-  if (!hydrated || data === null) return null;
+  if (!hydrated || data === null) return <ProductGridSkeleton count={4} />;
 
   if (data.cards.length === 0) {
     return (
@@ -82,8 +84,14 @@ function WishlistCardItem({
       sizes={card.sizes}
       media={
         card.imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={card.imageUrl} alt={card.imageAlt} className="h-[82%] w-[82%] object-contain" />
+          <SmartImage
+            src={card.imageUrl}
+            alt={card.imageAlt}
+            width={400}
+            height={420}
+            sizes="(max-width: 768px) 90vw, 320px"
+            className="h-[82%] w-[82%] object-contain"
+          />
         ) : (
           <span aria-hidden className="block size-1/2 rounded-2xl bg-line" />
         )

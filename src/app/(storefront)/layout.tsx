@@ -15,6 +15,7 @@ import { DarkFooter } from "@/components/store/dark-footer";
 import { SideOfferTab } from "@/components/store/side-offer-tab";
 import { ScrollTopButton } from "@/components/store/scroll-top-button";
 import { FacebookIcon, InstagramIcon, TikTokIcon } from "@/components/store/icons";
+import { SmartImage } from "@/components/ui/smart-image";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getStoreSettings();
@@ -28,8 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 function StoreLogo({ name, logoUrl }: { name: string; logoUrl: string | null }) {
   if (logoUrl) {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={logoUrl} alt={name} className="h-11 w-auto" />;
+    return <SmartImage src={logoUrl} alt={name} width={160} height={44} priority className="h-11 w-auto" />;
   }
   return (
     <span className="font-heading text-[30px] font-bold uppercase tracking-[1.5px] text-navy">

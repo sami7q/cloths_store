@@ -1,5 +1,6 @@
 import { formatPrice, percentOff, toNumber } from "@/lib/format";
 import { messages } from "@/lib/i18n";
+import { SmartImage } from "@/components/ui/smart-image";
 import type { ProductForCard } from "@/server/storefront";
 import type { ProductCardProps, ProductCardSwatch } from "./product-card";
 import type { QuickAddItem } from "./shop-product-card";
@@ -68,8 +69,14 @@ export function buildProductCardProps(
     sizes: sizeSeen.slice(0, MAX_SIZES),
     extraSizeCount: sizeSeen.length > MAX_SIZES ? sizeSeen.length - MAX_SIZES : undefined,
     media: image ? (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img src={image.url} alt={image.alt} className="h-[82%] w-[82%] object-contain" />
+      <SmartImage
+        src={image.url}
+        alt={image.alt}
+        width={400}
+        height={420}
+        sizes="(max-width: 768px) 90vw, (max-width: 1024px) 45vw, 320px"
+        className="h-[82%] w-[82%] object-contain"
+      />
     ) : (
       <span aria-hidden className="block size-1/2 rounded-2xl bg-line" />
     ),

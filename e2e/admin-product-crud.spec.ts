@@ -80,6 +80,9 @@ test("admin creates, activates, verifies live, then archives a product", async (
   await page.getByRole("button", { name: "Save", exact: true }).click();
   await expect(page.getByText("Product saved.")).toBeVisible();
 
-  const response = await page.goto(`/product/${productSlug}`);
-  expect(response?.status()).toBe(404);
+  // The PDP route streams (it has a loading.tsx boundary), so the HTTP
+  // status is 200 and notFound() renders in-stream — assert the themed
+  // 404 page content instead of the status code.
+  await page.goto(`/product/${productSlug}`);
+  await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
 });

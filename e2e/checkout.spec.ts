@@ -53,7 +53,8 @@ test("guest browses, gets the multi-buy promo in cart, and checks out with COD",
 
   // -- Contact ---------------------------------------------------------------
   await page.getByLabel("Full name").fill("E2E Tester");
-  await page.getByLabel("Email").fill("e2e-checkout@test.local");
+  // exact: the footer newsletter input is also labeled with an email string.
+  await page.getByLabel("Email", { exact: true }).fill("e2e-checkout@test.local");
   await page.getByLabel("Phone").fill("01000000001");
   await page.getByRole("button", { name: "Next", exact: true }).click();
 

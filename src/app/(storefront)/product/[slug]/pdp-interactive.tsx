@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/lib/cart-store";
+import { SmartImage } from "@/components/ui/smart-image";
 
 export type PdpVariant = {
   id: string;
@@ -51,6 +52,8 @@ type Labels = {
   onlyLeft: string; // contains {n}
   outOfStock: string;
   cartComingSoon: string;
+  increaseQty: string;
+  decreaseQty: string;
 };
 
 export function PdpInteractive({
@@ -104,8 +107,15 @@ export function PdpInteractive({
       <div>
         <div className="flex aspect-[1/1.05] items-center justify-center overflow-hidden rounded-[10px] bg-card">
           {activeImage ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={activeImage.url} alt={activeImage.alt} className="h-[82%] w-[82%] object-contain" />
+            <SmartImage
+              src={activeImage.url}
+              alt={activeImage.alt}
+              width={800}
+              height={840}
+              priority
+              sizes="(max-width: 1024px) 100vw, 55vw"
+              className="h-[82%] w-[82%] object-contain"
+            />
           ) : null}
         </div>
         {gallery.length > 1 ? (
@@ -121,8 +131,7 @@ export function PdpInteractive({
                   i === imageIndex ? "border-navy" : "border-line",
                 )}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={img.url} alt={img.alt} className="h-4/5 w-4/5 object-contain" />
+                <SmartImage src={img.url} alt={img.alt} width={80} height={80} sizes="64px" className="h-4/5 w-4/5 object-contain" />
               </button>
             ))}
           </div>
@@ -203,7 +212,7 @@ export function PdpInteractive({
           <div className="flex items-center rounded-full border border-line">
             <button
               type="button"
-              aria-label="−"
+              aria-label={labels.decreaseQty}
               onClick={() => setQty((q) => Math.max(1, q - 1))}
               className="flex size-11 items-center justify-center text-xl font-bold text-gray-6 hover:text-ink"
             >
@@ -212,7 +221,7 @@ export function PdpInteractive({
             <span className="min-w-8 text-center text-base font-extrabold">{qty}</span>
             <button
               type="button"
-              aria-label="+"
+              aria-label={labels.increaseQty}
               onClick={() => setQty((q) => Math.min(maxQty, q + 1))}
               className="flex size-11 items-center justify-center text-xl font-bold text-gray-6 hover:text-ink"
             >
