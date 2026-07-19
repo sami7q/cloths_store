@@ -480,23 +480,22 @@ export async function bulkUpdateProducts(raw: unknown): Promise<BulkResult> {
 
 // -- CSV import --------------------------------------------------------------
 
-const IMPORT_COLUMNS = [
-  "sku",
-  "slug",
-  "name",
-  "nameAr",
-  "description",
-  "descriptionAr",
-  "categorySlug",
-  "basePrice",
-  "compareAtPrice",
-  "cardPrice",
-  "costPrice",
-  "material",
-  "brand",
-  "tags",
-  "status",
-] as const;
+type ImportColumn =
+  | "sku"
+  | "slug"
+  | "name"
+  | "nameAr"
+  | "description"
+  | "descriptionAr"
+  | "categorySlug"
+  | "basePrice"
+  | "compareAtPrice"
+  | "cardPrice"
+  | "costPrice"
+  | "material"
+  | "brand"
+  | "tags"
+  | "status";
 
 export type ImportResult = { ok: true; created: number; updated: number; skipped: number } | { ok: false; error: string };
 
@@ -514,7 +513,7 @@ export async function importProductsCsv(formData: FormData): Promise<ImportResul
   const rows = parseCsv(await file.text());
   if (rows.length < 2) return { ok: false, error: t.common.error };
   const header = rows[0].map((h) => h.trim());
-  const idx = (name: (typeof IMPORT_COLUMNS)[number]) => header.indexOf(name);
+  const idx = (name: ImportColumn) => header.indexOf(name);
   if (idx("sku") === -1 || idx("name") === -1) return { ok: false, error: t.common.error };
 
   const categories = await db.category.findMany({ select: { id: true, slug: true } });
@@ -524,7 +523,7 @@ export async function importProductsCsv(formData: FormData): Promise<ImportResul
   let updated = 0;
   let skipped = 0;
   for (const row of rows.slice(1).slice(0, 1000)) {
-    const cell = (name: (typeof IMPORT_COLUMNS)[number]) => {
+    const cell = (name: ImportColumn) => {
       const i = idx(name);
       return i === -1 ? "" : (row[i] ?? "").trim();
     };

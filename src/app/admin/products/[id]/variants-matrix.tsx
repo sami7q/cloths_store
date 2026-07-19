@@ -110,7 +110,17 @@ export function VariantsMatrix({
     startTransition(async () => {
       const result = await saveVariants({
         productId,
-        rows: rows.map(({ hasOrders: _hasOrders, ...r }) => r),
+        rows: rows.map((r) => ({
+          id: r.id,
+          colorName: r.colorName,
+          colorHex: r.colorHex,
+          size: r.size,
+          sku: r.sku,
+          price: r.price,
+          stock: r.stock,
+          lowStockAt: r.lowStockAt,
+          isActive: r.isActive,
+        })),
       });
       if (result.ok) {
         setFeedback({ ok: true, text: result.message });
