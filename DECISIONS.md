@@ -420,10 +420,53 @@ platform generic and admin-configurable.
   buttons); checkout's "Next" button needs `exact: true` because the
   dev-mode Next.js Dev Tools floating button ("Open Next.js Dev Tools")
   substring-matches "Next".
-- **Latent bug found, deferred to the Step 2–6 batch:**
-  `src/server/auth.ts` post-login fallback uses `redirect("\admin")` — the
-  backslash makes it the relative path `"admin"`, which only resolves to
-  `/admin` by accident of resolving against `/login`. Fix queued.
+- **False alarm, corrected:** a suspected `redirect("\admin")` typo in
+  `src/server/auth.ts` was a search-tool display artifact (MSYS backslash
+  mangling) — byte-level inspection shows the file correctly reads
+  `redirect("/admin")`. No fix needed.
+
+## Phase 7 — Hardening (Steps 2–6 batch) — PHASE COMPLETE
+
+- **Empty states were already complete** (cart, checkout, wishlist, search,
+  PLP filters, account orders/addresses, admin tables, PDP reviews) — the
+  audit found no gaps, so Step 2 reduced to boundaries: `loading.tsx`
+  skeletons (storefront group, PLP, PDP, search, account, admin — the
+  layout/shell stays visible while content streams), `error.tsx` per route
+  group + root `global-error.tsx` (inline-styled: it replaces the root
+  layout, so globals.css is unavailable), and the cart/checkout/wishlist
+  pre-hydration `return null` blanks now render skeletons instead.
+  New bilingual `errorPage` strings in both message files.
+- **`SmartImage` (`components/ui/smart-image.tsx`)** wraps `next/image`:
+  raster sources get optimized; `.svg` sources render as plain `<img>` —
+  the optimizer blocks SVG by default and resizing gains nothing, and this
+  avoids `dangerouslyAllowSVG`. All 9 storefront `<img>` sites converted
+  (PDP main image gets `priority` — it is the LCP element). The hero's
+  CSS-background image became an absolute-fill `SmartImage` so merchant
+  hero uploads are optimized; seeded gradient heroes are unaffected.
+- **A11y pass:** global `:focus-visible` ring (navy; white inside the dark
+  footer); marquee + smooth-scroll respect `prefers-reduced-motion`;
+  qty steppers/coupon/search/newsletter inputs got real labels (new
+  bilingual `increaseQty`/`decreaseQty` keys — labels were literally "−"
+  and "+"); `aria-current="page"` on the active nav link; the product-card
+  quick-add reveal now also appears on keyboard focus (was hover-only);
+  storefront `text-gray-4` on white bumped to `gray-6` for meaningful text
+  (2.5:1 fails AA; gray-4 kept for decorative marks, placeholders, and on
+  dark surfaces where it passes ~8:1). Admin hint text left as-is.
+- **Lighthouse (2026-07-19, prod build, Lighthouse 12.8.2, headless
+  Chrome):** home **93**/100/100 mobile and **100**/100/100 desktop; PDP
+  **94**/100/100 mobile and **100**/100/100 desktop
+  (perf/SEO/best-practices). Target ≥90 met with no dev-only workarounds;
+  mobile LCP ~3.1 s under emulated throttling is the remaining soft spot.
+- **README rewritten** (setup, seeded logins, env reference, tests,
+  Vercel + Neon deploy walkthrough cross-referencing the pending
+  Postgres-switch steps below).
+- **⚠ Spec gap surfaced (pre-dates Phase 7, needs a decision before
+  launch):** `messages/ar.json` is complete and every admin form edits
+  bilingual fields, but **no runtime locale layer exists** — nothing ever
+  imports ar.json, there is no locale switcher, and the storefront renders
+  English/LTR only. §1's "switchable en/ar with RTL" was never wired in
+  Phase 3+. Left out of Phase 7 (not in its approved scope); flagged for
+  an explicit go/no-go before deployment.
 
 ## ⚠ Pending tasks — before the final deployment phase
 
