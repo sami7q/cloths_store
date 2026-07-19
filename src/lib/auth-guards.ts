@@ -38,3 +38,24 @@ export async function requireAdminModule(
   if (!can(session.user.role, module, level)) redirect(`/admin/forbidden?m=${module}&l=${level}`);
   return session;
 }
+
+/**
+ * Permission check for admin server actions / route handlers, where a
+ * redirect() is the wrong failure mode. Throws "forbidden" instead; also
+ * re-verifies the user row still exists (stale-JWT guard) and returns the
+ * verified actor id for audit logging.
+ */
+export async function requireAdminAction(
+  module: AdminModule,
+  level: AccessLevel = "edit",
+): Promise<{ userId: string; role: string }> {
+  const session = await auth();
+  const role = session?.user?.role;
+  if (!session?.user?.id || !can(role, module, level)) throw new Error("forbidden");
+  const user = await db.user.findUnique({
+    where: { id: session.user.id },
+    select: { id: true, isActive: true },
+  });
+  if (!user?.isActive) throw new Error("forbidden");
+  return { userId: user.id, role: role as string };
+}

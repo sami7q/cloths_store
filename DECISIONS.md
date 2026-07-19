@@ -204,6 +204,69 @@ platform generic and admin-configurable.
   admin/account/api/checkout/cart/dev, JSON-LD Product + BreadcrumbList on
   the PDP, themed 404 page.
 
+## Phase 6 — Admin (modules 1–4: Dashboard, Orders, Products, Categories)
+
+- **Incremental delivery:** per user request the 16 modules ship in batches of
+  3–4 with a verification stop after each; this section covers batch 1.
+- **Shell:** collapsible sidebar (state in localStorage) filtered by the
+  permissions matrix, topbar global search (products/orders/customers, each
+  group permission-gated), notifications bell (unread count + mark-all-read),
+  profile menu. Sidebar/topbar carry `print:hidden` so invoice/packing pages
+  print clean.
+- **Shared infra:** TanStack Table v8 in fully manual mode — rows arrive
+  server-paginated/sorted, header clicks rewrite searchParams (linkable list
+  state, no client fetching). Zero-dependency CSV helpers (BOM for Excel
+  Arabic, RFC-4180 parser); exports capped at 5000 rows and audit-logged.
+  `requireAdminAction()` guard for server actions/routes (throws instead of
+  redirecting; re-verifies the user row exists and is active — stale-JWT
+  safe) and `audit()` (never throws — an audit failure must not roll back the
+  action it describes). Upload storage behind a `StorageDriver` interface
+  (local `/public/uploads` driver now, S3-compatible swap for prod; 5 MB cap,
+  MIME whitelist).
+- **Dashboard definitions:** revenue counts every order not
+  CANCELLED/RETURNED regardless of payment status (COD is demand before it is
+  paid). "Conversion proxy" = orders ÷ distinct purchasing customers in the
+  window. Low-stock list compares `stock <= lowStockAt` in JS (Prisma can't
+  compare two columns portably).
+- **Orders:** status change logs to OrderStatusLog with the acting user and
+  optional note; "notify customer" sends the React-Email status template
+  (skips with a log when SMTP unset). Marking a COD order DELIVERED
+  auto-sets `paymentStatus = PAID` (cash collected on delivery). Refund is a
+  reversible paymentStatus flag. Manual (staff-created) orders start at
+  CONFIRMED — staff entry skips the PENDING gate — and reuse `quoteCart`, so
+  promos/shipping/COD fee are recomputed server-side identically to checkout;
+  the address country derives from the matched shipping zone (never
+  hardcoded). Invoice (with prices) and packing slip (without) share one
+  print-CSS document.
+- **Products:** editor is one page with six tabs; a new product saves
+  General first (created as DRAFT, basePrice 0) and unlocks
+  Variants/Media/SEO/Visibility after creation. Card price supports
+  auto mode — the server recomputes from the active CARD_EXTRA_PERCENT rule
+  and stores a concrete `cardPrice` (client preview is advisory only).
+  Variants-matrix rows removed by the admin are hard-deleted unless
+  referenced by order items — those deactivate instead (snapshots keep old
+  orders intact either way, but the SKU history stays queryable). CSV
+  import/export is product-level with matching columns (round-trip safe);
+  rows match existing products by SKU, else create (import needs
+  categorySlug + basePrice + description to create). Variant-level export
+  belongs to the Inventory module (module 6).
+- **Categories:** drag-drop reordering within the same level (HTML5 DnD,
+  insert-before semantics); parent changes via the edit dialog. Delete is
+  blocked while products or subcategories reference the category. Pasted or
+  uploaded SVG icons are sanitized (must be a bare `<svg>` doc; rejects
+  script/foreignObject/event handlers/external hrefs).
+- **Verified live (2026-07-19):** dashboard KPIs/charts vs seed, order
+  ORD-1021 status flow (PENDING→PROCESSING w/ note + email-skip log + audit
+  rows) + tracking + invoice, manual order ORD-1027 (2× BABUTCHA Grey/39 →
+  −247.35 multi-buy, free shipping Giza, +25 COD = 3,075.65 exactly matching
+  the checkout engine), product "Aqua Test Slide" full round-trip (create →
+  price 999/1299/450 + auto card 849.15 → 2×3 variant matrix, bulk stock 10 →
+  ACTIVE → live PDP with consistent card-price display), category
+  create/nest/delete + persisted drag reorder, STAFF sidebar filtering +
+  /admin/forbidden. **Test residue in dev.db** (reseed clears): ORD-1027,
+  ORD-1021 now PROCESSING with tracking TRK-889900, product
+  `aqua-test-slide`, audit-log rows.
+
 ## ⚠ Pending tasks — before the final deployment phase
 
 - **Switch the datasource back to PostgreSQL:** set
