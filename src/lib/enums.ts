@@ -6,6 +6,11 @@
  * native enums again — keep names/values identical.
  */
 
+/** Narrowing guard for enum-ish values arriving as plain strings (query params, CSV cells). */
+export function isOneOf<T extends string>(values: readonly T[], v: string): v is T {
+  return (values as readonly string[]).includes(v);
+}
+
 export const ROLES = ["CUSTOMER", "STAFF", "MANAGER", "ADMIN"] as const;
 export type Role = (typeof ROLES)[number];
 

@@ -153,7 +153,9 @@ export const getCategoryBySlug = cache(async (slug: string) => {
 
 /** Facet values available inside a category (or globally when null). */
 export const getCatalogFacets = cache(async (categoryId: string | null) => {
-  const productFilter = categoryId ? { categoryId, status: "ACTIVE" } : { status: "ACTIVE" };
+  const productFilter = categoryId
+    ? { categoryId, status: "ACTIVE" as const }
+    : { status: "ACTIVE" as const };
   const [colors, sizes, materials, priceAgg] = await Promise.all([
     db.variant.findMany({
       where: { isActive: true, product: productFilter },
@@ -183,8 +185,8 @@ export const getCatalogFacets = cache(async (categoryId: string | null) => {
     colors,
     sizes: sizes.map((s) => s.size),
     materials: materials.map((m) => m.material as string),
-    minPrice: Number(priceAgg._min.basePrice ?? 0),
-    maxPrice: Number(priceAgg._max.basePrice ?? 0),
+    minPrice: Number(priceAgg._min?.basePrice ?? 0),
+    maxPrice: Number(priceAgg._max?.basePrice ?? 0),
   };
 });
 

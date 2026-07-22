@@ -2,7 +2,7 @@ import "server-only";
 import { db } from "@/lib/db";
 import { toNumber, formatPrice } from "@/lib/format";
 import { parseListParams, first, type RawSearchParams } from "@/lib/admin/params";
-import { ORDER_STATUSES } from "@/lib/enums";
+import { ORDER_STATUSES, PAYMENT_STATUSES, isOneOf } from "@/lib/enums";
 import type { Prisma } from "@prisma/client";
 
 /** Read-side queries for the admin Orders module (§6.2). */
@@ -23,11 +23,11 @@ export type OrderRow = {
 function buildWhere(raw: RawSearchParams): Prisma.OrderWhereInput {
   const where: Prisma.OrderWhereInput = {};
   const tab = first(raw.tab);
-  if ((ORDER_STATUSES as readonly string[]).includes(tab)) where.status = tab;
+  if (isOneOf(ORDER_STATUSES, tab)) where.status = tab;
   const pm = first(raw.pm);
   if (pm === "CARD" || pm === "COD") where.paymentMethod = pm;
   const ps = first(raw.ps);
-  if (ps) where.paymentStatus = ps;
+  if (isOneOf(PAYMENT_STATUSES, ps)) where.paymentStatus = ps;
   const from = first(raw.from);
   const to = first(raw.to);
   if (from || to) {

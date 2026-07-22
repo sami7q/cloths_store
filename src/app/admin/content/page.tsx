@@ -4,6 +4,7 @@ import { can } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { messages } from "@/lib/i18n";
 import { first, type RawSearchParams } from "@/lib/admin/params";
+import type { BannerPlacement } from "@/lib/enums";
 import { PageHeader } from "@/components/admin/list-controls";
 import { BannersClient, type BannerFields, type BannerItem } from "./banners-client";
 import { PagesClient, type PageItem } from "./pages-client";
@@ -60,7 +61,7 @@ export default async function AdminContentPage({ searchParams }: { searchParams:
     );
   } else {
     const banners = await db.banner.findMany({
-      where: { placement: tab.placement as string },
+      where: { placement: tab.placement as BannerPlacement },
       orderBy: { sortOrder: "asc" },
     });
     const items: BannerItem[] = banners.map((b) => {

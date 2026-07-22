@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { toNumber } from "@/lib/format";
+import type { OrderStatus } from "@/lib/enums";
 
 /**
  * Dashboard aggregates (§6.1). Revenue counts every order that isn't
@@ -7,7 +8,7 @@ import { toNumber } from "@/lib/format";
  * PENDING-payment until delivered but are still demand.
  */
 
-const DEAD_STATUSES = ["CANCELLED", "RETURNED"];
+const DEAD_STATUSES: OrderStatus[] = ["CANCELLED", "RETURNED"];
 
 export type KpiWindow = { revenue: number; orders: number; aov: number; newCustomers: number; ordersPerCustomer: number };
 

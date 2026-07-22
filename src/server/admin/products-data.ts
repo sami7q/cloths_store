@@ -2,7 +2,7 @@ import "server-only";
 import { db } from "@/lib/db";
 import { formatPrice, toNumber } from "@/lib/format";
 import { parseListParams, first, type RawSearchParams } from "@/lib/admin/params";
-import { PRODUCT_STATUSES } from "@/lib/enums";
+import { PRODUCT_STATUSES, isOneOf } from "@/lib/enums";
 import type { Prisma } from "@prisma/client";
 
 /** Read-side queries for the admin Products module (§6.3). */
@@ -24,7 +24,7 @@ export type ProductRow = {
 function buildWhere(raw: RawSearchParams): Prisma.ProductWhereInput {
   const where: Prisma.ProductWhereInput = {};
   const status = first(raw.status);
-  if ((PRODUCT_STATUSES as readonly string[]).includes(status)) where.status = status;
+  if (isOneOf(PRODUCT_STATUSES, status)) where.status = status;
   const category = first(raw.category);
   if (category) where.categoryId = category;
   const q = first(raw.q).trim();

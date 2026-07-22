@@ -8,7 +8,7 @@ import { audit } from "@/lib/admin/audit";
 import { parseCsv } from "@/lib/admin/csv";
 import { storage } from "@/lib/storage";
 import { messages } from "@/lib/i18n";
-import { PRODUCT_STATUSES } from "@/lib/enums";
+import { PRODUCT_STATUSES, isOneOf } from "@/lib/enums";
 import { toNumber } from "@/lib/format";
 
 /** Mutating actions for the admin Products module (§6.3). */
@@ -534,7 +534,8 @@ export async function importProductsCsv(formData: FormData): Promise<ImportResul
       continue;
     }
     const num = (v: string) => (v === "" || Number.isNaN(Number(v)) ? null : Number(v));
-    const status = (PRODUCT_STATUSES as readonly string[]).includes(cell("status")) ? cell("status") : undefined;
+    const statusCell = cell("status");
+    const status = isOneOf(PRODUCT_STATUSES, statusCell) ? statusCell : undefined;
     const categoryId = catBySlug.get(cell("categorySlug"));
     const patch = {
       name,

@@ -52,8 +52,8 @@ export default async function AdminPaymentsPage() {
             <KeyRow label={tp.secretKey} value={mask(process.env.STRIPE_SECRET_KEY)} set={Boolean(process.env.STRIPE_SECRET_KEY)} />
             <KeyRow
               label={tp.publishableKey}
-              value={mask(process.env.STRIPE_PUBLISHABLE_KEY)}
-              set={Boolean(process.env.STRIPE_PUBLISHABLE_KEY)}
+              value={mask(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)}
+              set={Boolean(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)}
             />
             <KeyRow
               label={tp.webhookSecret}

@@ -3,7 +3,7 @@ import { requireAdminModule } from "@/lib/auth-guards";
 import { can } from "@/lib/permissions";
 import { db } from "@/lib/db";
 import { messages } from "@/lib/i18n";
-import { REVIEW_STATUSES } from "@/lib/enums";
+import { REVIEW_STATUSES, isOneOf } from "@/lib/enums";
 import { buildQuery, first, parseListParams, type RawSearchParams } from "@/lib/admin/params";
 import { AdminSelect, FilterBar, PageHeader, Pagination } from "@/components/admin/list-controls";
 import { ReviewCard, type ReviewItem } from "./review-card";
@@ -21,7 +21,7 @@ export default async function AdminReviewsPage({ searchParams }: { searchParams:
 
   const where: Prisma.ReviewWhereInput = {};
   const tab = first(raw.tab);
-  if ((REVIEW_STATUSES as readonly string[]).includes(tab)) where.status = tab;
+  if (isOneOf(REVIEW_STATUSES, tab)) where.status = tab;
   const rating = Number(first(raw.rating));
   if (rating >= 1 && rating <= 5) where.rating = rating;
   if (params.q) where.product = { name: { contains: params.q } };

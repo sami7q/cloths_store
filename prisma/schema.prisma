@@ -1,25 +1,95 @@
 // Prisma schema — full data model per STORE-BUILD-PROMPT.md §4.
 //
-// ⚠ TEMPORARY DEV DATASOURCE: SQLite for phases P1–P7. DATABASE_URL is
-// "file:./dev.db" in .env (dev) and "file:./test.db" for Playwright E2E runs.
-// Production target is PostgreSQL (Neon). Before the deployment phase:
-//   1. switch provider back to "postgresql" + url = env("DATABASE_URL"),
-//   2. re-run `prisma migrate dev` to regenerate migrations for Postgres,
-//   3. `prisma migrate deploy` + seed against Neon.
-// Postgres-compat rules honored here (see DECISIONS.md → Phase 1):
-//   - no SQLite-only features; standard types only,
-//   - enums are String columns (SQLite has no enums) with allowed values
-//     defined in src/lib/enums.ts — single source of truth app-wide,
-//   - list-ish fields (tags, countries, targetIds, …) are Json (portable),
-//   - no native type attributes (@db.*); money is plain Decimal.
+// Datasource: PostgreSQL (Neon via Vercel's native integration).
+//   - DATABASE_URL          → pooled connection (PgBouncer, "-pooler" host) — runtime queries.
+//   - DATABASE_URL_UNPOOLED → direct connection — used by `prisma migrate` via directUrl.
+// Both are injected automatically by the Neon integration on Vercel; locally
+// copy them from Vercel → Storage → Neon → Quickstart into .env.
+//
+// Native enums mirror src/lib/enums.ts (names/values identical) — enums.ts
+// remains the app-side source of truth for Zod/forms/server actions.
+// Money columns are @db.Decimal(10, 2); long-form text is @db.Text.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+// ---------------------------------------------------------------------------
+// Enums — keep in lockstep with src/lib/enums.ts
+// ---------------------------------------------------------------------------
+
+enum Role {
+  CUSTOMER
+  STAFF
+  MANAGER
+  ADMIN
+}
+
+enum ProductStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
+
+enum PaymentMethod {
+  CARD
+  COD
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURNED
+}
+
+enum CouponType {
+  PERCENT
+  FIXED
+  FREE_SHIPPING
+}
+
+enum CouponScope {
+  ALL
+  CATEGORY
+  PRODUCT
+}
+
+enum PromoType {
+  BUY_X_GET_DISCOUNT
+  BUNDLE_PRICE
+  CARD_EXTRA_PERCENT
+  FREE_SHIPPING_OVER
+}
+
+enum BannerPlacement {
+  HERO
+  LIFESTYLE
+  SIDE_TAB
+  MARQUEE
+  SOCIAL_GRID
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
 
 // ---------------------------------------------------------------------------
@@ -42,7 +112,7 @@ model StoreSettings {
   notificationPrefs Json? // {NEW_ORDER?:bool, LOW_STOCK?:bool, PENDING_REVIEW?:bool} (§6.14) — missing key = on
   maintenanceMode Boolean  @default(false)
   codEnabled      Boolean  @default(true)
-  codFee          Decimal  @default(0)
+  codFee          Decimal  @default(0) @db.Decimal(10, 2)
   updatedAt       DateTime @updatedAt
 }
 
@@ -56,10 +126,10 @@ model User {
   email        String   @unique
   phone        String?
   passwordHash String?
-  role         String   @default("CUSTOMER") // Role: CUSTOMER | STAFF | MANAGER | ADMIN
+  role         Role     @default(CUSTOMER)
   avatarUrl    String?
   isActive     Boolean  @default(true)
-  adminNotes   String? // internal staff notes (§6.8) — never exposed to the customer
+  adminNotes   String?  @db.Text // internal staff notes (§6.8) — never exposed to the customer
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -111,7 +181,7 @@ model Category {
   name      String
   nameAr    String
   slug      String  @unique
-  iconSvg   String?
+  iconSvg   String? @db.Text // pasted/uploaded SVG markup (§6.4)
   imageUrl  String?
   parentId  String?
   sortOrder Int     @default(0)
@@ -125,30 +195,30 @@ model Category {
 }
 
 model Product {
-  id             String   @id @default(cuid())
+  id             String        @id @default(cuid())
   name           String
   nameAr         String
-  slug           String   @unique
-  description    String
-  descriptionAr  String
+  slug           String        @unique
+  description    String        @db.Text
+  descriptionAr  String        @db.Text
   material       String?
   categoryId     String
   brand          String?
-  basePrice      Decimal
-  compareAtPrice Decimal?
-  cardPrice      Decimal?
-  costPrice      Decimal?
-  sku            String   @unique
+  basePrice      Decimal       @db.Decimal(10, 2)
+  compareAtPrice Decimal?      @db.Decimal(10, 2)
+  cardPrice      Decimal?      @db.Decimal(10, 2)
+  costPrice      Decimal?      @db.Decimal(10, 2)
+  sku            String        @unique
   barcode        String?
   weight         Int? // grams
-  tags           Json     @default("[]") // string[]
-  status         String   @default("DRAFT") // ProductStatus: DRAFT | ACTIVE | ARCHIVED
-  isFeatured     Boolean  @default(false)
-  sortOrder      Int      @default(0)
+  tags           Json          @default("[]") // string[]
+  status         ProductStatus @default(DRAFT)
+  isFeatured     Boolean       @default(false)
+  sortOrder      Int           @default(0)
   seoTitle       String?
   seoDescription String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
 
   category      Category            @relation(fields: [categoryId], references: [id])
   images        ProductImage[]
@@ -182,7 +252,7 @@ model Variant {
   colorHex   String
   size       String
   sku        String   @unique
-  price      Decimal? // overrides Product.basePrice when set
+  price      Decimal? @db.Decimal(10, 2) // overrides Product.basePrice when set
   stock      Int      @default(0)
   lowStockAt Int      @default(3)
   isActive   Boolean  @default(true)
@@ -223,26 +293,26 @@ model CollectionProduct {
 // ---------------------------------------------------------------------------
 
 model Order {
-  id              String   @id @default(cuid())
-  orderNumber     String   @unique
+  id              String        @id @default(cuid())
+  orderNumber     String        @unique
   userId          String?
   guestEmail      String?
   guestPhone      String?
-  subtotal        Decimal
-  discountTotal   Decimal  @default(0)
-  shippingTotal   Decimal  @default(0)
-  codFee          Decimal?
-  grandTotal      Decimal
-  paymentMethod   String // PaymentMethod: CARD | COD
-  paymentStatus   String   @default("PENDING") // PaymentStatus: PENDING | PAID | FAILED | REFUNDED
-  status          String   @default("PENDING") // OrderStatus: PENDING | CONFIRMED | PROCESSING | SHIPPED | DELIVERED | CANCELLED | RETURNED
+  subtotal        Decimal       @db.Decimal(10, 2)
+  discountTotal   Decimal       @default(0) @db.Decimal(10, 2)
+  shippingTotal   Decimal       @default(0) @db.Decimal(10, 2)
+  codFee          Decimal?      @db.Decimal(10, 2)
+  grandTotal      Decimal       @db.Decimal(10, 2)
+  paymentMethod   PaymentMethod
+  paymentStatus   PaymentStatus @default(PENDING)
+  status          OrderStatus   @default(PENDING)
   shippingAddress Json
   couponCode      String?
   promoBreakdown  Json? // itemized promo-engine result snapshot for admin detail
   trackingNumber  String?
-  notes           String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  notes           String?       @db.Text
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 
   user          User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
   items         OrderItem[]
@@ -260,9 +330,9 @@ model OrderItem {
   variantId     String?
   nameSnapshot  String
   imageSnapshot String?
-  price         Decimal
+  price         Decimal @db.Decimal(10, 2)
   quantity      Int
-  total         Decimal
+  total         Decimal @db.Decimal(10, 2)
 
   order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
@@ -273,13 +343,13 @@ model OrderItem {
 }
 
 model OrderStatusLog {
-  id         String   @id @default(cuid())
+  id         String       @id @default(cuid())
   orderId    String
-  fromStatus String? // OrderStatus
-  toStatus   String // OrderStatus
+  fromStatus OrderStatus?
+  toStatus   OrderStatus
   byUserId   String?
-  note       String?
-  createdAt  DateTime @default(now())
+  note       String?      @db.Text
+  createdAt  DateTime     @default(now())
 
   order  Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
   byUser User? @relation(fields: [byUserId], references: [id], onDelete: SetNull)
@@ -292,27 +362,27 @@ model OrderStatusLog {
 // ---------------------------------------------------------------------------
 
 model Coupon {
-  code         String   @id
-  type         String // CouponType: PERCENT | FIXED | FREE_SHIPPING
-  value        Decimal
-  minSubtotal  Decimal?
+  code         String      @id
+  type         CouponType
+  value        Decimal     @db.Decimal(10, 2)
+  minSubtotal  Decimal?    @db.Decimal(10, 2)
   maxUses      Int?
-  usedCount    Int      @default(0)
+  usedCount    Int         @default(0)
   perUserLimit Int?
   startsAt     DateTime
   endsAt       DateTime
-  isActive     Boolean  @default(true)
-  appliesTo    String   @default("ALL") // CouponScope: ALL | CATEGORY | PRODUCT
-  targetIds    Json     @default("[]") // string[]
+  isActive     Boolean     @default(true)
+  appliesTo    CouponScope @default(ALL)
+  targetIds    Json        @default("[]") // string[]
 }
 
 model PromoRule {
-  id       String  @id @default(cuid())
+  id       String    @id @default(cuid())
   name     String
-  type     String // PromoType: BUY_X_GET_DISCOUNT | BUNDLE_PRICE | CARD_EXTRA_PERCENT | FREE_SHIPPING_OVER
+  type     PromoType
   config   Json
-  isActive Boolean @default(true)
-  priority Int     @default(0)
+  isActive Boolean   @default(true)
+  priority Int       @default(0)
 }
 
 model ShippingZone {
@@ -320,8 +390,8 @@ model ShippingZone {
   name      String
   countries Json     @default("[]") // string[]
   cities    Json     @default("[]") // string[]
-  rate      Decimal
-  freeOver  Decimal?
+  rate      Decimal  @db.Decimal(10, 2)
+  freeOver  Decimal? @db.Decimal(10, 2)
   etaText   String
   isActive  Boolean  @default(true)
 }
@@ -331,8 +401,8 @@ model ShippingZone {
 // ---------------------------------------------------------------------------
 
 model Banner {
-  id         String  @id @default(cuid())
-  placement  String // BannerPlacement: HERO | LIFESTYLE | SIDE_TAB | MARQUEE | SOCIAL_GRID
+  id         String          @id @default(cuid())
+  placement  BannerPlacement
   title      String?
   titleAr    String?
   subtitle   String?
@@ -340,8 +410,8 @@ model Banner {
   imageUrl   String?
   linkUrl    String?
   config     Json? // placement-specific extras (badge text, caption, style hints)
-  sortOrder  Int     @default(0)
-  isActive   Boolean @default(true)
+  sortOrder  Int             @default(0)
+  isActive   Boolean         @default(true)
 
   @@index([placement, isActive])
 }
@@ -351,8 +421,8 @@ model Page {
   slug          String  @unique
   title         String
   titleAr       String
-  contentRich   String
-  contentRichAr String
+  contentRich   String  @db.Text
+  contentRichAr String  @db.Text
   isActive      Boolean @default(true)
 }
 
@@ -361,15 +431,15 @@ model Page {
 // ---------------------------------------------------------------------------
 
 model Review {
-  id         String   @id @default(cuid())
+  id         String       @id @default(cuid())
   productId  String
   userId     String
   rating     Int // 1-5
   title      String?
-  body       String?
-  status     String   @default("PENDING") // ReviewStatus: PENDING | APPROVED | REJECTED
-  adminReply String?
-  createdAt  DateTime @default(now())
+  body       String?      @db.Text
+  status     ReviewStatus @default(PENDING)
+  adminReply String?      @db.Text
+  createdAt  DateTime     @default(now())
 
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -387,9 +457,9 @@ model NewsletterSub {
 
 model Notification {
   id        String   @id @default(cuid())
-  type      String // e.g. LOW_STOCK | NEW_ORDER | PENDING_REVIEW
+  type      String // open set (LOW_STOCK | NEW_ORDER | PENDING_REVIEW | ...) — intentionally not an enum
   title     String
-  body      String
+  body      String   @db.Text
   link      String?
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())

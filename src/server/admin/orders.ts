@@ -52,7 +52,7 @@ export async function updateOrderStatus(_prev: ActionState, formData: FormData):
     // COD collects on delivery — mark payment as PAID with the DELIVERED step.
     const paymentPatch =
       toStatus === "DELIVERED" && order.paymentMethod === "COD" && order.paymentStatus === "PENDING"
-        ? { paymentStatus: "PAID" }
+        ? { paymentStatus: "PAID" as const }
         : {};
 
     await db.$transaction([
