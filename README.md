@@ -1,154 +1,134 @@
+<div align="center">
+
 # Cloths Store — E-Commerce Platform + Admin Dashboard
 
-A production-ready, general-purpose e-commerce platform: a customer storefront
-whose entire content (branding, navigation, banners, products, promotions) is
-driven from the database, plus a complete back-office at `/admin`. A merchant
-can deploy it, configure everything from the dashboard, and start selling —
-with zero code changes.
+**A database-driven storefront and a 16-module back office.**
+A merchant deploys it, configures everything from `/admin`, and starts selling with no code changes.
+
+![Next.js](https://img.shields.io/badge/Next.js_15-App_Router-000000?logo=nextdotjs)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-6-2D3748?logo=prisma)
+![Auth.js](https://img.shields.io/badge/Auth.js-v5-7C3AED)
+![Stripe](https://img.shields.io/badge/Stripe-checkout-635BFF?logo=stripe&logoColor=white)
+![Playwright](https://img.shields.io/badge/Playwright-E2E-2EAD33?logo=playwright&logoColor=white)
+
+[Features](#features) · [Architecture](#architecture) · [Run locally](#run-locally) · [Tests](#tests)
+
+</div>
+
+> **Live demo:** _coming soon_ — run it locally in two minutes with the seeded data below.
+
+---
 
 ## Features
 
 **Storefront**
-- CMS-driven homepage: promo marquee, hero banner, category grid, lifestyle
-  cards, collection carousels, social grid — all managed from admin
-- Category listing pages with filters (price, color, size, material,
-  availability), sorting and pagination; live search suggestions
-- Product pages with color-synced galleries, per-variant stock, card-price
-  display, reviews, related products
-- Cart with a server-side **promo engine** (Nth-item discounts, bundle
-  prices, card-payment discount, free-shipping thresholds) and coupons
-- 5-step checkout — guest or signed-in — with Stripe (test mode) and Cash on
-  Delivery, shipping zones, order confirmation emails
-- Account area (orders + status timeline, addresses, profile), wishlist with
-  guest→login merge, SEO (metadata, JSON-LD, sitemap, robots)
+- CMS-driven homepage: promo marquee, hero banner, category grid, lifestyle cards, collection carousels — all managed from admin
+- Category pages with filters (price, color, size, material, availability), sorting, pagination and live search suggestions
+- Product pages with color-synced galleries, per-variant stock, reviews and related products
+- Cart with a **server-side promotion engine**: Nth-item discounts, bundle prices, card-payment discount, free-shipping thresholds, coupons
+- 5-step checkout (guest or signed-in) with **Stripe** (test mode) or Cash on Delivery, shipping zones and confirmation emails
+- Account area: orders with status timeline, addresses, profile, wishlist with guest → login merge
+- SEO: metadata, JSON-LD, sitemap, robots
 
-**Admin (16 modules)**
-Dashboard KPIs & charts · Orders (status flow, invoices/packing slips, manual
-orders) · Products (tabbed editor, variants matrix, CSV import/export) ·
-Categories · Collections · Inventory · Discounts (coupons + promotion
-builder) · Customers · Reviews moderation · Content CMS (banners, pages, nav,
-footer) · Shipping zones · Payments · Staff & roles (RBAC) · Notifications ·
-Reports · Settings (identity, SEO, maintenance mode, audit log)
+**Admin — 16 modules**
+Dashboard KPIs & charts · Orders (status flow, invoices, packing slips, manual orders) · Products (tabbed editor, variant matrix, CSV import/export) · Categories · Collections · Inventory · Discounts (coupons + promotion builder) · Customers · Reviews moderation · Content CMS · Shipping zones · Payments · Staff & roles (**RBAC**) · Notifications · Reports · Settings (identity, SEO, maintenance mode, audit log)
+
+## Architecture
+
+```mermaid
+flowchart LR
+    subgraph Browser
+        SF["Storefront<br/>Server Components"]
+        AD["Admin /admin<br/>TanStack Table · Recharts"]
+        CART["Cart & wishlist<br/>Zustand"]
+    end
+
+    subgraph Next["Next.js 15 (App Router)"]
+        SA["Server Actions<br/>(Zod-validated)"]
+        RH["Route handlers<br/>/api/*  ·  Stripe webhook"]
+        MW["Middleware<br/>Auth.js session + RBAC"]
+        PROMO["Promotion engine<br/>(server-side pricing)"]
+        MAIL["React Email<br/>+ Nodemailer"]
+    end
+
+    DB[("PostgreSQL (Neon)<br/>Prisma 6")]
+    ST["Stripe"]
+
+    SF & CART --> SA
+    AD --> MW --> SA
+    SA --> PROMO --> DB
+    SA --> DB
+    RH --> DB
+    ST -->|webhook| RH
+    SA -->|checkout session| ST
+    SA --> MAIL
+```
+
+**Key decisions**
+- **Prices are computed on the server only.** The promotion engine runs inside Server Actions, so the cart total the customer sees is the same code path that creates the order.
+- **Everything visible is data.** Branding, navigation, banners, pages and footer come from the database, which makes the store reusable for any merchant.
+- **Role-based access** (Admin / Manager / Staff) is checked in middleware *and* in every admin action.
 
 ## Tech stack
 
-Next.js 15 (App Router, Server Components/Actions) · TypeScript (strict) ·
-Tailwind CSS v4 · Prisma 6 · Auth.js (NextAuth v5) · Stripe · Zustand ·
-Zod · React Email + Nodemailer · Recharts · TanStack Table v8 · Vitest ·
-Playwright
+Next.js 15 (App Router, Server Components / Actions) · TypeScript (strict) · Tailwind CSS v4 · Prisma 6 · Auth.js (NextAuth v5) · Stripe · Zustand · Zod · React Email + Nodemailer · Recharts · TanStack Table v8 · Vitest · Playwright
 
-## Local setup
+## Run locally
 
-Prerequisites: **Node 20.17+** and **pnpm**.
+Requirements: Node 20.17+, pnpm and PostgreSQL (local, Docker or Neon).
 
 ```bash
+git clone https://github.com/sami7q/cloths_store.git && cd cloths_store
 pnpm install
-cp .env.example .env        # then edit — see the env reference below
-pnpm exec prisma db push    # dev uses SQLite (file:./dev.db) — see note below
-pnpm exec prisma db seed
-pnpm dev                    # http://localhost:3000  (admin at /admin)
+cp .env.example .env            # set DATABASE_URL + DATABASE_URL_UNPOOLED to a local or Neon Postgres
+pnpm exec prisma migrate deploy
+pnpm exec prisma db seed        # 40 products, 25 orders, promotions, coupons…
+pnpm dev                        # http://localhost:3000   ·   admin at /admin
 ```
 
-> **Datasource note:** development currently runs on SQLite
-> (`DATABASE_URL="file:./dev.db"` in `.env`) so no local Postgres is needed.
-> The schema is written Postgres-compatible throughout; the switch to
-> Neon/Postgres is the final pre-deployment step (see **Deploying** below).
-
-### Seeded logins
+Seeded logins (local only):
 
 | Role | Email | Password |
 |---|---|---|
 | Admin | `admin@store.test` | `Admin123!` |
 | Manager | `manager@store.test` | `Admin123!` |
 | Staff | `staff@store.test` | `Admin123!` |
-| Customers | 10 accounts (see Prisma Studio) | `Customer123!` |
 
-The deterministic seed also creates 8 categories, 40 products with color/size
-variants, 6 collections, 4 promo rules, 3 coupons, 2 shipping zones, 25
-orders across the last 90 days, reviews, banners and static pages.
-
-## Environment variables
-
-All variables live in `.env` (see `.env.example` for the template):
-
-| Variable | Purpose |
-|---|---|
-| `DATABASE_URL` | `file:./dev.db` in dev; Neon Postgres URL in production |
-| `AUTH_SECRET` | Auth.js session secret (`openssl rand -base64 32`) |
-| `AUTH_URL` | Public base URL (`http://localhost:3000` in dev) |
-| `GOOGLE_ID` / `GOOGLE_SECRET` | Optional — enables Google sign-in when set |
-| `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` / `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Optional — card payments render disabled without them; COD keeps working |
-| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM` | Optional — order/status emails are skipped (with a log line) when unset |
-| `UPLOAD_DRIVER` | `local` (dev, files in `public/uploads`) or `s3` + the `S3_*` variables |
+Stripe and Google sign-in are optional — without keys, card payment renders disabled and Cash on Delivery keeps working.
 
 ## Tests
 
 ```bash
-pnpm test        # Vitest — promo engine unit tests
-pnpm test:e2e    # Playwright — checkout, admin product CRUD, admin order status
-pnpm lint        # ESLint
-pnpm build       # production build + strict type-check
+pnpm test          # unit tests (Vitest): promotion engine rules
+pnpm test:e2e      # Playwright: checkout flow, admin product CRUD, order status changes
+pnpm lint
 ```
 
-The E2E suite is fully isolated: it reseeds its own SQLite database
-(`prisma/test.db`) and boots a dev server on port **3100**, so your `pnpm dev`
-session and `dev.db` are never touched.
+## Deploying
 
-## Deploying (Vercel + Neon)
-
-### 1. Switch the datasource to Postgres (one-time)
-
-1. In `prisma/schema.prisma` change the datasource to
-   `provider = "postgresql"` (the URL already reads `env("DATABASE_URL")`).
-2. Create a [Neon](https://neon.tech) project and put its connection string in
-   `DATABASE_URL` (keep `?sslmode=require`).
-3. Regenerate migrations for Postgres: delete the SQLite
-   `prisma/migrations` folder and run `pnpm exec prisma migrate dev --name init`
-   once against Neon.
-4. Seed: `pnpm exec prisma db seed` (or adapt the seed for production data).
-5. Optional hardening while you're here: restore native enums and
-   `@db.Decimal(10,2)` / `@db.Text` annotations, and reconcile
-   `src/lib/enums.ts` with the generated Prisma enums
-   (see `DECISIONS.md → Pending tasks`).
-
-### 2. Vercel
-
-1. Import the repository in Vercel (framework preset: Next.js).
-2. Set the environment variables from the table above — `DATABASE_URL`
-   (Neon), `AUTH_SECRET`, `AUTH_URL` (your production URL), and any of the
-   optional Stripe/SMTP/Google/S3 groups you use.
-3. Set the build command to `prisma migrate deploy && next build` (or run
-   `prisma migrate deploy` as a release step).
-4. For uploads in production use `UPLOAD_DRIVER=s3` with an S3-compatible
-   bucket — Vercel's filesystem is ephemeral, so the `local` driver is
-   dev-only.
-5. Point the Stripe webhook at `https://<your-domain>/api/webhooks/stripe`
-   and set `STRIPE_WEBHOOK_SECRET` from the Stripe dashboard.
-
-### 3. Post-deploy checklist
-
-- Sign in as the seeded admin, change the password, and configure store
-  identity (name, logo, hotline) under **Settings**.
-- Replace placeholder product/banner images via the admin media uploads.
-- Verify a test checkout (Stripe test card + COD) end to end.
+The schema is Postgres-compatible throughout. On Vercel, set `DATABASE_URL` to a Neon Postgres URL; the `vercel-build` script runs `prisma generate && prisma migrate deploy && next build`.
 
 ## Project structure
 
-```
+```text
 src/
-  app/
-    (storefront)/   # public store
-    (auth)/         # login, register, forgot password
-    admin/          # dashboard (protected, RBAC)
-    api/            # webhooks, uploads
-  components/       # store/ + admin/ + ui/ primitives
-  lib/              # db, auth, promotions, permissions, utils
-  server/           # server actions by domain
-prisma/             # schema, migrations, seed
-messages/           # en.json, ar.json (i18n strings)
-e2e/                # Playwright specs + test-DB reset
+  app/(storefront)   public store pages
+  app/(auth)         sign-in / sign-up
+  app/admin          16 admin modules
+  app/api            route handlers, Stripe webhook
+  server/            server actions and data access (storefront + admin)
+  lib/               promotion engine, Stripe payments, utilities
+  components/        UI components
+  emails/            React Email templates
+prisma/              schema, migrations, seed
+e2e/                 Playwright specs
 ```
 
-`DECISIONS.md` logs every ambiguity resolved during the build and the
-pending pre-deployment tasks. `STORE-BUILD-PROMPT.md` is the original build
-specification.
+---
+
+<div align="center">
+
+Built by **Sami Aqeel** · [LinkedIn](https://www.linkedin.com/in/sami-sami-496a33231/) · [GitHub](https://github.com/sami7q) · sami22eng@gmail.com
+
+</div>
